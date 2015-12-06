@@ -94,6 +94,8 @@ sed -i -e "/config.add_subpackage(.externals.)/d" nipy/setup.py
 rm -vrf nipy/externals/
 rm -rf lib/lapack_lite/
 
+find examples -type f -name '*.py' -exec sed -i '1{\@^#!/usr/bin/env python@d}' {} ';'
+
 %build
 export NIPY_EXTERNAL_LAPACK=1
 

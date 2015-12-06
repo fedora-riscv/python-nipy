@@ -20,7 +20,7 @@ Source0:        https://github.com/nipy/nipy/archive/%{version}/%{modname}-%{ver
 Patch0:         0001-test_olsR-use-assert_array_almost_equal-instead.patch
 BuildRequires:  git-core
 BuildRequires:  gcc
-BuildRequires:  lapack-devel openblas-devel atlas-devel
+BuildRequires:  lapack-devel blas-devel atlas-devel
 
 %description
 Neuroimaging tools for Python.

@@ -36,10 +36,10 @@ BuildRequires:  numpy scipy python2-nibabel sympy
 BuildRequires:  Cython
 # Test deps
 BuildRequires:  python2-nose
-BuildRequires:  python-six python2-transforms3d
+BuildRequires:  python2-six python2-transforms3d
 BuildRequires:  nipy-data
 Requires:       numpy scipy python2-nibabel sympy
-Requires:       python-six python2-transforms3d
+Requires:       python2-six python2-transforms3d
 Requires:       python-matplotlib
 Suggests:       nipy-data
 

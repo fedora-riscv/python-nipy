@@ -1,0 +1,33 @@
+From b26bf17d47fb8c6a6d0ed6e1da0f47cb69835193 Mon Sep 17 00:00:00 2001
+From: Igor Gnatenko <i.gnatenko.brain@gmail.com>
+Date: Sun, 1 Nov 2015 15:21:39 +0100
+Subject: [PATCH] test_olsR: use assert_array_almost_equal instead
+
+due to bug in numpy
+
+Related: https://github.com/numpy/numpy/issues/5200
+Signed-off-by: Igor Gnatenko <i.gnatenko.brain@gmail.com>
+---
+ nipy/algorithms/statistics/models/tests/test_olsR.py | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/nipy/algorithms/statistics/models/tests/test_olsR.py b/nipy/algorithms/statistics/models/tests/test_olsR.py
+index 666b360..c48168f 100644
+--- a/nipy/algorithms/statistics/models/tests/test_olsR.py
++++ b/nipy/algorithms/statistics/models/tests/test_olsR.py
+@@ -148,9 +148,9 @@ def test_results():
+     M = np.identity(14)
+     M = np.array([M[i] for i in [0,1,2,3,4,5,6,8,9,10,11,12,13]])
+     Fc = r.Fcontrast(M)
+-    yield niptest.assert_almost_equal, Fc.F, f['F'], 6
+-    yield niptest.assert_almost_equal, Fc.df_num, f['df_num'], 6
+-    yield niptest.assert_almost_equal, Fc.df_den, f['df_den'], 6
++    yield niptest.assert_array_almost_equal, [Fc.F], [f['F']], 6
++    yield niptest.assert_array_almost_equal, [Fc.df_num], [f['df_num']], 6
++    yield niptest.assert_array_almost_equal, [Fc.df_den], [f['df_den']], 6
+ 
+     thetas = []
+     sds = []
+-- 
+2.6.2
+

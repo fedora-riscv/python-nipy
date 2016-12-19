@@ -10,7 +10,7 @@
 
 Name:           python-%{modname}
 Version:        0.4.0
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        Neuroimaging in Python FMRI analysis package
 
 License:        BSD
@@ -163,6 +163,9 @@ popd
 %{python3_sitearch}/%{modname}*
 
 %changelog
+* Mon Dec 19 2016 Miro Hrončok <mhroncok@redhat.com> - 0.4.0-7
+- Rebuild for Python 3.6
+
 * Sat Oct 15 2016 Peter Robinson <pbrobinson@fedoraproject.org> - 0.4.0-6
 - rebuilt for matplotlib-2.0.0
 

@@ -118,8 +118,8 @@ do
 done < tmp
 rm -f tmp
 
-rm -v %{buildroot}%{python2_sitearch}/*.{npz,nii}
-rm -v %{buildroot}%{python3_sitearch}/*.{npz,nii}
+rm -fv %{buildroot}%{python2_sitearch}/*.{npz,nii}
+rm -fv %{buildroot}%{python3_sitearch}/*.{npz,nii}
 
 %check
 # Disable some tests that trigger bugs in sympy.

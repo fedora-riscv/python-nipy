@@ -2,22 +2,14 @@
 
 %global _docdir_fmt %{name}
 
-# Disable one of tests due to:
-# https://github.com/nipy/nipy/issues/382
-%if 0%{?__isa_bits} != 64
-%global skip_tests test_mu2tet
-%endif
-
 Name:           python-%{modname}
-Version:        0.4.0
-Release:        8%{?dist}
+Version:        0.4.1
+Release:        1%{?dist}
 Summary:        Neuroimaging in Python FMRI analysis package
 
 License:        BSD
 URL:            http://nipy.org/nipy
 Source0:        https://github.com/nipy/nipy/archive/%{version}/%{modname}-%{version}.tar.gz
-# https://github.com/nipy/nipy/pull/381
-Patch0:         0001-test_olsR-use-assert_array_almost_equal-instead.patch
 BuildRequires:  git-core
 BuildRequires:  gcc
 BuildRequires:  lapack-devel blas-devel atlas-devel
@@ -118,24 +110,8 @@ do
 done < tmp
 rm -f tmp
 
-rm -fv %{buildroot}%{python2_sitearch}/*.{npz,nii}
-rm -fv %{buildroot}%{python3_sitearch}/*.{npz,nii}
-
 %check
-# Disable some tests that trigger bugs in sympy.
-# We'll just have to wait for sympy upstream to work on this.
-# Do it here, not in %%prep, so that the installed versions are unmodified.
-sed -i.bak -r 's/test_altprotocol|test_agreement|test_event_design/_disabled_\0/' \
-    build/lib.*-*/nipy/modalities/fmri/fmristat/tests/test_FIAC.py
-
-sed -i.bak -r 's/test_bsa/_disabled_\0/' \
-    build/lib.*-*/nipy/labs/spatial_models/tests/test_bsa.py
-
-# For some reason the precision is lower, ignore for now
-sed -i.bak -r 's/yield (.*), 6/yield \1, 4/' \
-    build/lib.*-*/nipy/algorithms/statistics/models/tests/test_olsR.py
-
-TESTING_DATA=( \
+TESTING_DATA=(                                             \
 nipy/testing/functional.nii.gz                             \
 nipy/modalities/fmri/tests/spm_hrfs.mat                    \
 nipy/modalities/fmri/tests/spm_dmtx.npz                    \
@@ -143,6 +119,11 @@ nipy/testing/anatomical.nii.gz                             \
 nipy/algorithms/statistics/models/tests/test_data.bin      \
 nipy/algorithms/diagnostics/tests/data/tsdiff_results.mat  \
 nipy/modalities/fmri/tests/spm_bases.mat                   \
+nipy/labs/spatial_models/tests/some_blobs.nii              \
+nipy/modalities/fmri/tests/cond_test1.txt                  \
+nipy/modalities/fmri/tests/dct_5.txt                       \
+nipy/modalities/fmri/tests/dct_10.txt                      \
+nipy/modalities/fmri/tests/dct_100.txt                     \
 )
 
 pushd build/lib.*-%{python2_version}
@@ -179,6 +160,9 @@ popd
 %{python3_sitearch}/%{modname}*
 
 %changelog
+* Sun Feb 12 2017 Zbigniew Jędrzejewski-Szmek <zbyszek@in.waw.pl> - 0.4.1-1
+- Update to latest version
+
 * Sat Feb 11 2017 Fedora Release Engineering <releng@fedoraproject.org> - 0.4.0-8
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
 

@@ -4,7 +4,7 @@
 
 Name:           python-%{modname}
 Version:        0.4.1
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Neuroimaging in Python FMRI analysis package
 
 License:        BSD
@@ -23,16 +23,16 @@ analysis of functional brain imaging data using an open development model.
 %package -n python2-%{modname}
 Summary:        %{summary}
 %{?python_provide:%python_provide python2-%{modname}}
-BuildRequires:  python2-devel python-setuptools
-BuildRequires:  numpy scipy python2-nibabel sympy
-BuildRequires:  Cython
+BuildRequires:  python2-devel python2-setuptools
+BuildRequires:  python2-numpy python2-scipy python2-nibabel python2-sympy
+BuildRequires:  python2-Cython
 # Test deps
 BuildRequires:  python2-nose
 BuildRequires:  python2-six python2-transforms3d
 BuildRequires:  nipy-data
-Requires:       numpy scipy python2-nibabel sympy
+Requires:       python2-numpy python2-scipy python2-nibabel python2-sympy
 Requires:       python2-six python2-transforms3d
-Requires:       python-matplotlib
+Requires:       python2-matplotlib
 Suggests:       nipy-data
 
 %description -n python2-%{modname}
@@ -160,6 +160,10 @@ popd
 %{python3_sitearch}/%{modname}*
 
 %changelog
+* Mon Mar 26 2018 Iryna Shcherbina <ishcherb@redhat.com> - 0.4.1-5
+- Update Python 2 dependency declarations to new packaging standards
+  (See https://fedoraproject.org/wiki/FinalizingFedoraSwitchtoPython3)
+
 * Fri Feb 09 2018 Fedora Release Engineering <releng@fedoraproject.org> - 0.4.1-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
 

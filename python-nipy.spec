@@ -4,7 +4,7 @@
 
 Name:           python-%{modname}
 Version:        0.4.1
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        Neuroimaging in Python FMRI analysis package
 
 License:        BSD
@@ -160,6 +160,9 @@ popd
 %{python3_sitearch}/%{modname}*
 
 %changelog
+* Tue Jun 19 2018 Miro Hrončok <mhroncok@redhat.com> - 0.4.1-6
+- Rebuilt for Python 3.7
+
 * Mon Mar 26 2018 Iryna Shcherbina <ishcherb@redhat.com> - 0.4.1-5
 - Update Python 2 dependency declarations to new packaging standards
   (See https://fedoraproject.org/wiki/FinalizingFedoraSwitchtoPython3)

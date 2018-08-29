@@ -108,6 +108,10 @@ nipy/modalities/fmri/tests/dct_100.txt                     \
 
 # It seems like this is checking some internals of sympy that were changed:
 %global skip_tests test_implemented_function
+%ifarch s390x
+# https://bugzilla.redhat.com/show_bug.cgi?id=1605792#c14
+%global skip_tests %{skip_tests} -e test_mahalanobis2 -e test_2D -e test_agreement -e test_spectral_decomposition
+%endif
 
 pushd build/lib.*-%{python3_version}
   for i in ${TESTING_DATA[@]}

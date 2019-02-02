@@ -4,7 +4,7 @@
 
 Name:           python-%{modname}
 Version:        0.4.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Neuroimaging in Python FMRI analysis package
 
 License:        BSD
@@ -133,6 +133,9 @@ popd
 %{python3_sitearch}/%{modname}*
 
 %changelog
+* Sat Feb 02 2019 Fedora Release Engineering <releng@fedoraproject.org> - 0.4.2-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
+
 * Tue Aug 14 2018 Miro Hrončok <mhroncok@redhat.com> - 0.4.2-1
 - Update to 0.4.2
 - Remove python2 subpackage

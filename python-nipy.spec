@@ -1,10 +1,15 @@
+# Skip tests for the time being: use deprecated numpy decorators
+# https://bugzilla.redhat.com/show_bug.cgi?id=1800845
+# WIP: https://github.com/nipy/nipy/pull/458
+%bcond_with tests
+
 %global modname nipy
 
 %global _docdir_fmt %{name}
 
 Name:           python-%{modname}
 Version:        0.4.2
-Release:        9%{?dist}
+Release:        10%{?dist}
 Summary:        Neuroimaging in Python FMRI analysis package
 
 License:        BSD
@@ -27,10 +32,12 @@ BuildRequires:  python3-devel python3-setuptools
 BuildRequires:  python3-numpy python3-scipy python3-nibabel python3-sympy
 BuildRequires:  python3-Cython
 # Test deps
+%if %{with tests}
 BuildRequires:  python3-nose
 BuildRequires:  python3-six
 BuildRequires:  python3-transforms3d
 BuildRequires:  nipy-data
+%endif
 Requires:       python3-configobj
 Requires:       python3-numpy
 Requires:       python3-scipy
@@ -91,6 +98,7 @@ done < tmp
 rm -f tmp
 
 %check
+%if %{with tests}
 TESTING_DATA=(                                             \
 nipy/testing/functional.nii.gz                             \
 nipy/modalities/fmri/tests/spm_hrfs.mat                    \
@@ -121,6 +129,7 @@ pushd build/lib.*-%{python3_version}
   done
   PATH="%{buildroot}%{_bindir}:$PATH" nosetests-%{python3_version} -v %{?skip_tests:-e %{skip_tests}}
 popd
+%endif
 
 %files -n python3-%{modname}
 %license LICENSE
@@ -133,6 +142,10 @@ popd
 %{python3_sitearch}/%{modname}*
 
 %changelog
+* Thu Aug 13 2020 Ankur Sinha <ankursinha AT fedoraproject DOT org> - 0.4.2-10
+- Temporarily disable tests
+- #1800845
+
 * Sat Aug 01 2020 Fedora Release Engineering <releng@fedoraproject.org> - 0.4.2-9
 - Second attempt - Rebuilt for
   https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild

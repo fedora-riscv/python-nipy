@@ -3,13 +3,19 @@
 # WIP: https://github.com/nipy/nipy/pull/458
 %bcond_with tests
 
+%if 0%{?fedora} >= 33 || 0%{?rhel} >= 9
+%global blaslib flexiblas
+%else
+%global blaslib openblas
+%endif
+
 %global modname nipy
 
 %global _docdir_fmt %{name}
 
 Name:           python-%{modname}
 Version:        0.4.2
-Release:        10%{?dist}
+Release:        11%{?dist}
 Summary:        Neuroimaging in Python FMRI analysis package
 
 License:        BSD
@@ -17,7 +23,7 @@ URL:            http://nipy.org/nipy
 Source0:        https://github.com/nipy/nipy/archive/%{version}/%{modname}-%{version}.tar.gz
 BuildRequires:  git-core
 BuildRequires:  gcc
-BuildRequires:  lapack-devel blas-devel atlas-devel
+BuildRequires:  %{blaslib}-devel
 
 %description
 Neuroimaging tools for Python.
@@ -142,6 +148,9 @@ popd
 %{python3_sitearch}/%{modname}*
 
 %changelog
+* Sun Aug 16 2020 Iñaki Úcar <iucar@fedoraproject.org> - 0.4.2-11
+- https://fedoraproject.org/wiki/Changes/FlexiBLAS_as_BLAS/LAPACK_manager
+
 * Thu Aug 13 2020 Ankur Sinha <ankursinha AT fedoraproject DOT org> - 0.4.2-10
 - Temporarily disable tests
 - #1800845

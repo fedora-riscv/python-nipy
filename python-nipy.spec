@@ -1,7 +1,5 @@
-# Skip tests for the time being: use deprecated numpy decorators
-# https://bugzilla.redhat.com/show_bug.cgi?id=1800845
-# WIP: https://github.com/nipy/nipy/pull/458
-%bcond_with tests
+# All tests run
+%bcond_without tests
 
 %if 0%{?fedora} >= 33 || 0%{?rhel} >= 9
 %global blaslib flexiblas
@@ -14,8 +12,8 @@
 %global _docdir_fmt %{name}
 
 Name:           python-%{modname}
-Version:        0.4.2
-Release:        13%{?dist}
+Version:        0.5.0
+Release:        1%{?dist}
 Summary:        Neuroimaging in Python FMRI analysis package
 
 License:        BSD
@@ -33,7 +31,6 @@ analysis of functional brain imaging data using an open development model.
 
 %package -n python3-%{modname}
 Summary:        %{summary}
-%{?python_provide:%python_provide python3-%{modname}}
 BuildRequires:  python3-devel python3-setuptools
 BuildRequires:  python3-numpy python3-scipy python3-nibabel python3-sympy
 BuildRequires:  python3-Cython
@@ -63,7 +60,7 @@ analysis of functional brain imaging data using an open development model.
 Python 3 version.
 
 %prep
-%autosetup -n %{modname}-%{version} -p1 -Sgit
+%autosetup -n %{modname}-%{version}
 
 # Hard fix for bundled libs
 find -type f -name '*.py' -exec sed -i \
@@ -73,10 +70,6 @@ find -type f -name '*.py' -exec sed -i \
   -e "s/from nipy.externals.argparse/from argparse/"                 \
   -e "s/import nipy.externals.argparse as argparse/import argparse/" \
   -e "s/from \.*externals.transforms3d/from transforms3d/"           \
-  {} ';'
-find scripts/ -type f -exec sed -i \
-  -e "s/from nipy.externals.argparse/from argparse/"                 \
-  -e "s/import nipy.externals.argparse as argparse/import argparse/" \
   {} ';'
 sed -i -e "/config.add_subpackage(.externals.)/d" nipy/setup.py
 rm -vrf nipy/externals/
@@ -122,10 +115,6 @@ nipy/modalities/fmri/tests/dct_100.txt                     \
 
 # It seems like this is checking some internals of sympy that were changed:
 %global skip_tests test_implemented_function
-%ifarch s390x
-# https://bugzilla.redhat.com/show_bug.cgi?id=1605792#c14
-%global skip_tests %{skip_tests} -e test_mahalanobis2 -e test_2D -e test_agreement -e test_spectral_decomposition
-%endif
 
 pushd build/lib.*-%{python3_version}
   for i in ${TESTING_DATA[@]}
@@ -133,7 +122,7 @@ pushd build/lib.*-%{python3_version}
     mkdir -p ./${i%/*}/
     cp -a ../../$i ./$i
   done
-  PATH="%{buildroot}%{_bindir}:$PATH" nosetests-%{python3_version} -v %{?skip_tests:-e %{skip_tests}}
+  PATH="%{buildroot}%{_bindir}:$PATH" PYTHONPATH="%{buildroot}/%{python3_sitearch}" nosetests-%{python3_version} -v %{?skip_tests:-e %{skip_tests}}
 popd
 %endif
 
@@ -148,6 +137,12 @@ popd
 %{python3_sitearch}/%{modname}*
 
 %changelog
+* Sun Jul 04 2021 Ankur Sinha <ankursinha AT fedoraproject DOT org> - 0.5.0-1
+- Update to latest release
+- remove unneeded explicity provides
+- remove s390x test exlusions
+- Enable all tests
+
 * Fri Jun 04 2021 Python Maint <python-maint@redhat.com> - 0.4.2-13
 - Rebuilt for Python 3.10
 

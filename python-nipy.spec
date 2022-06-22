@@ -13,7 +13,7 @@
 
 Name:           python-%{modname}
 Version:        0.5.0
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Neuroimaging in Python FMRI analysis package
 
 License:        BSD
@@ -80,6 +80,9 @@ find examples -type f -name '*.py' -exec sed -i '1{\@^#!/usr/bin/env python@d}' 
 %build
 export NIPY_EXTERNAL_LAPACK=1
 
+# Regenerate the Cython files
+make recythonize
+
 %py3_build
 
 %install
@@ -116,7 +119,7 @@ nipy/modalities/fmri/tests/dct_100.txt                     \
 # It seems like this is checking some internals of sympy that were changed:
 %global skip_tests test_implemented_function
 
-pushd build/lib.*-%{python3_version}
+pushd build/lib.*-*
   for i in ${TESTING_DATA[@]}
   do
     mkdir -p ./${i%/*}/
@@ -137,6 +140,10 @@ popd
 %{python3_sitearch}/%{modname}*
 
 %changelog
+* Wed Jun 22 2022 Charalampos Stratakis <cstratak@redhat.com> - 0.5.0-5
+- Fix FTBFS with Python 3.11 and setuptools >= 62.1.0
+Resolves: rhbz#2099030, rhbz#2097101
+
 * Fri Jun 17 2022 Python Maint <python-maint@redhat.com> - 0.5.0-4
 - Rebuilt for Python 3.11
 

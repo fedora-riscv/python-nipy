@@ -13,7 +13,7 @@
 
 Name:           python-%{modname}
 Version:        0.5.0
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        Neuroimaging in Python FMRI analysis package
 
 License:        BSD
@@ -140,6 +140,9 @@ popd
 %{python3_sitearch}/%{modname}*
 
 %changelog
+* Fri Jul 22 2022 Fedora Release Engineering <releng@fedoraproject.org> - 0.5.0-6
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_37_Mass_Rebuild
+
 * Wed Jun 22 2022 Charalampos Stratakis <cstratak@redhat.com> - 0.5.0-5
 - Fix FTBFS with Python 3.11 and setuptools >= 62.1.0
 Resolves: rhbz#2099030, rhbz#2097101

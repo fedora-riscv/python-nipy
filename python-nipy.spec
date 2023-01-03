@@ -11,14 +11,17 @@
 
 %global _docdir_fmt %{name}
 
+%global commit 35a5f5205ba2aa54f1f0524564a6f1f8dafb237f
+%global snapdate 20230103
+
 Name:           python-%{modname}
-Version:        0.5.0
-Release:        7%{?dist}
+Version:        0.5.0^%(echo '%{commit}' | cut -b -7)git%{snapdate}
+Release:        1%{?dist}
 Summary:        Neuroimaging in Python FMRI analysis package
 
 License:        BSD
 URL:            http://nipy.org/nipy
-Source0:        https://github.com/nipy/nipy/archive/%{version}/%{modname}-%{version}.tar.gz
+Source0:        https://github.com/nipy/nipy/archive/%{commit}/%{modname}-%{commit}.tar.gz
 BuildRequires:  git-core
 BuildRequires:  gcc
 BuildRequires:  %{blaslib}-devel
@@ -33,7 +36,7 @@ analysis of functional brain imaging data using an open development model.
 Summary:        %{summary}
 BuildRequires:  python3-devel python3-setuptools
 BuildRequires:  python3-numpy python3-scipy python3-nibabel python3-sympy
-BuildRequires:  python3-Cython
+BuildRequires:  python3-Cython python3-pip
 # Test deps
 %if %{with tests}
 BuildRequires:  python3-nose
@@ -60,7 +63,7 @@ analysis of functional brain imaging data using an open development model.
 Python 3 version.
 
 %prep
-%autosetup -n %{modname}-%{version}
+%autosetup -n %{modname}-%{commit}
 
 # Hard fix for bundled libs
 find -type f -name '*.py' -exec sed -i \
@@ -140,6 +143,9 @@ popd
 %{python3_sitearch}/%{modname}*
 
 %changelog
+* Wed Feb 08 2023 Benjamin A. Beasley <code@musicinmybrain.net> - 0.5.0^19971cdgit20230102-1
+- Update to a current snapshot (19971cd)
+
 * Fri Jan 20 2023 Fedora Release Engineering <releng@fedoraproject.org> - 0.5.0-7
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_38_Mass_Rebuild
 

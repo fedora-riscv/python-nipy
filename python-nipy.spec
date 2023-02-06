@@ -1,21 +1,19 @@
 # All tests run
 %bcond_without tests
 
-%global modname nipy
-
 %global _docdir_fmt %{name}
 
 %global commit 35a5f5205ba2aa54f1f0524564a6f1f8dafb237f
 %global snapdate 20230103
 
-Name:           python-%{modname}
+Name:           python-nipy
 Version:        0.5.0^%(echo '%{commit}' | cut -b -7)git%{snapdate}
 Release:        1%{?dist}
 Summary:        Neuroimaging in Python FMRI analysis package
 
 License:        BSD
 URL:            http://nipy.org/nipy
-Source0:        https://github.com/nipy/nipy/archive/%{commit}/%{modname}-%{commit}.tar.gz
+Source0:        https://github.com/nipy/nipy/archive/%{commit}/nipy-%{commit}.tar.gz
 BuildRequires:  git-core
 BuildRequires:  gcc
 BuildRequires:  flexiblas-devel
@@ -26,7 +24,7 @@ Neuroimaging tools for Python.
 The aim of NIPY is to produce a platform-independent Python environment for the
 analysis of functional brain imaging data using an open development model.
 
-%package -n python3-%{modname}
+%package -n python3-nipy
 Summary:        %{summary}
 BuildRequires:  python3-devel python3-setuptools
 BuildRequires:  python3-numpy python3-scipy python3-nibabel python3-sympy
@@ -48,7 +46,7 @@ Requires:       python3-transforms3d
 Requires:       python3-matplotlib
 Suggests:       nipy-data
 
-%description -n python3-%{modname}
+%description -n python3-nipy
 Neuroimaging tools for Python.
 
 The aim of NIPY is to produce a platform-independent Python environment for the
@@ -57,7 +55,7 @@ analysis of functional brain imaging data using an open development model.
 Python 3 version.
 
 %prep
-%autosetup -n %{modname}-%{commit}
+%autosetup -n nipy-%{commit}
 
 # Hard fix for bundled libs
 find -type f -name '*.py' -exec sed -i \
@@ -89,7 +87,7 @@ export NIPY_EXTERNAL_LAPACK=1
 
 find %{buildroot}%{python3_sitearch} -name '*.so' -exec chmod 755 {} ';'
 
-find %{buildroot}%{python3_sitearch}/%{modname}/ -name '*.py' -type f > tmp
+find %{buildroot}%{python3_sitearch}/nipy/ -name '*.py' -type f > tmp
 while read lib
 do
  sed -i '1{\@^#!/usr/bin/env python@d}' $lib
@@ -126,7 +124,7 @@ pushd build/lib.*-*
 popd
 %endif
 
-%files -n python3-%{modname}
+%files -n python3-nipy
 %license LICENSE
 %doc README.rst AUTHOR THANKS examples
 %{_bindir}/nipy_3dto4d
@@ -134,7 +132,7 @@ popd
 %{_bindir}/nipy_4dto3d
 %{_bindir}/nipy_diagnose
 %{_bindir}/nipy_tsdiffana
-%{python3_sitearch}/%{modname}*
+%{python3_sitearch}/nipy*
 
 %changelog
 * Wed Feb 08 2023 Benjamin A. Beasley <code@musicinmybrain.net> - 0.5.0^19971cdgit20230102-1

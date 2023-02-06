@@ -17,11 +17,22 @@ Source0:        https://github.com/nipy/nipy/archive/%{commit}/nipy-%{commit}.ta
 BuildRequires:  gcc
 BuildRequires:  flexiblas-devel
 
-%description
+%global common_description %{expand:
 Neuroimaging tools for Python.
 
 The aim of NIPY is to produce a platform-independent Python environment for the
 analysis of functional brain imaging data using an open development model.
+
+In NIPY we aim to:
+
+• Provide an open source, mixed language scientific programming environment
+  suitable for rapid development.
+• Create software components in this environment to make it easy to develop
+  tools for MRI, EEG, PET and other modalities.
+• Create and maintain a wide base of developers to contribute to this platform.
+• Maintain and develop this framework as a single, easily installable bundle.}
+
+%description %{common_description}
 
 %package -n python3-nipy
 Summary:        %{summary}
@@ -45,13 +56,7 @@ Requires:       python3-transforms3d
 Requires:       python3-matplotlib
 Suggests:       nipy-data
 
-%description -n python3-nipy
-Neuroimaging tools for Python.
-
-The aim of NIPY is to produce a platform-independent Python environment for the
-analysis of functional brain imaging data using an open development model.
-
-Python 3 version.
+%description -n python3-nipy %{common_description}
 
 %prep
 %autosetup -n nipy-%{commit}
@@ -139,6 +144,7 @@ popd
 - Drop conditionals for EOL Fedoras and for EPEL8 and older
 - Remove spurious BuildRequires on git-core
 - Update URL to HTTPS
+- Update description from upstream
 
 * Fri Jan 20 2023 Fedora Release Engineering <releng@fedoraproject.org> - 0.5.0-7
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_38_Mass_Rebuild

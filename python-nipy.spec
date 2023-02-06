@@ -137,34 +137,12 @@ export NIPY_EXTERNAL_LAPACK=1
 
 %check
 %if %{with tests}
-TESTING_DATA=(                                             \
-nipy/testing/functional.nii.gz                             \
-nipy/modalities/fmri/tests/spm_hrfs.mat                    \
-nipy/modalities/fmri/tests/spm_dmtx.npz                    \
-nipy/testing/anatomical.nii.gz                             \
-nipy/algorithms/statistics/models/tests/test_data.bin      \
-nipy/algorithms/diagnostics/tests/data/tsdiff_results.mat  \
-nipy/modalities/fmri/tests/spm_bases.mat                   \
-nipy/labs/spatial_models/tests/some_blobs.nii              \
-nipy/modalities/fmri/tests/cond_test1.txt                  \
-nipy/modalities/fmri/tests/dct_5.txt                       \
-nipy/modalities/fmri/tests/dct_10.txt                      \
-nipy/modalities/fmri/tests/dct_100.txt                     \
-)
-
-# It seems like this is checking some internals of sympy that were changed:
-%global skip_tests test_implemented_function
-
-pushd build/lib.*-*
-  for i in ${TESTING_DATA[@]}
-  do
-    mkdir -p ./${i%/*}/
-    cp -a ../../$i ./$i
-  done
-  PATH="%{buildroot}%{_bindir}:$PATH" \
-      PYTHONPATH="%{buildroot}/%{python3_sitearch}" \
-      nosetests-%{python3_version} -v %{?skip_tests:-e %{skip_tests}}
-popd
+mkdir -p for_testing
+cd for_testing
+PATH="%{buildroot}%{_bindir}:${PATH}" \
+    PYTHONPATH='%{buildroot}%{python3_sitearch}' \
+    PYTHONDONTWRITEBYTECODE=1 \
+    %{python3} ../tools/nipnost --verbosity=3 nipy
 %endif
 
 
@@ -201,6 +179,7 @@ popd
 - Allow the examples to retain shebangs (but do fix them)
 - Split docs/examples into a -doc subpackage and depend on nipy-data
 - Add Changelog to the documentation
+- Simplify the tests to match .travis.yml
 
 * Fri Jan 20 2023 Fedora Release Engineering <releng@fedoraproject.org> - 0.5.0-7
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_38_Mass_Rebuild

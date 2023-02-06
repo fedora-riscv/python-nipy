@@ -134,8 +134,6 @@ export NIPY_EXTERNAL_LAPACK=1
 
 %py3_install
 
-find %{buildroot}%{python3_sitearch} -name '*.so' -exec chmod 755 {} ';'
-
 
 %check
 %if %{with tests}

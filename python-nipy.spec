@@ -13,22 +13,41 @@ License:        BSD
 URL:            https://nipy.org/nipy
 Source0:        https://github.com/nipy/nipy/archive/%{commit}/nipy-%{commit}.tar.gz
 
+# Ensure numpy is in install_requires, not only setup_requires
+# https://github.com/nipy/nipy/pull/500
+Patch:          https://github.com/nipy/nipy/pull/500.patch
+# Remove a couple of unnecessary bundled dependencies
+# https://github.com/nipy/nipy/pull/501
+#   - configobj is not used anywhere
+#   - argparse is present in the standard library from Python 2.7 onwards
+Patch:          https://github.com/nipy/nipy/pull/501.patch
+# Fix a typo introduced in PR#501
+# https://github.com/nipy/nipy/pull/502
+Patch:          https://github.com/nipy/nipy/pull/502.patch
+
 BuildRequires:  gcc
 BuildRequires:  flexiblas-devel
 BuildRequires:  python3-devel
 
-BuildRequires:  python3-setuptools
-BuildRequires:  python3-numpy
-BuildRequires:  python3-scipy
-BuildRequires:  python3-nibabel
-BuildRequires:  python3-sympy
-BuildRequires:  python3-Cython
-BuildRequires:  python3-pip
+BuildRequires:  python3dist(setuptools)
+
+# For re-generating C code as required by packaging guidelines; see also
+# nipy/nipy/info.py
+BuildRequires:  python3dist(cython) >= 0.12.1
+
+# setup_requires (and install_requires with patch); see also nipy/nipy/info.py
+BuildRequires:  python3dist(numpy) >= 1.14
+# install_requires; see also nipy/nipy/info.py
+BuildRequires:  python3dist(nibabel) >= 2
+BuildRequires:  python3dist(scipy) >= 1
+BuildRequires:  python3dist(sympy) >= 1
+# Unbundled and added to install_requires in %%prep:
+BuildRequires:  python3dist(six)
+BuildRequires:  python3dist(transforms3d)
 
 %if %{with tests}
-BuildRequires:  python3-nose
-BuildRequires:  python3-six
-BuildRequires:  python3-transforms3d
+# https://fedoraproject.org/wiki/Changes/DeprecateNose
+BuildRequires:  python3dist(nose)
 BuildRequires:  nipy-data
 %endif
 
@@ -55,32 +74,35 @@ In NIPY we aim to:
 %package -n python3-nipy
 Summary:        %{summary}
 
-Requires:       python3-configobj
-Requires:       python3-numpy
-Requires:       python3-scipy
-Requires:       python3-nibabel
-Requires:       python3-sympy
-Requires:       python3-six
-Requires:       python3-transforms3d
-Requires:       python3-matplotlib
+# Adds various plotting functionality, but not an “official” dependency
+Requires:       python3dist(matplotlib)
+
 Suggests:       nipy-data
 
 %description -n python3-nipy %{common_description}
 
 %prep
-%autosetup -n nipy-%{commit}
+%autosetup -n nipy-%{commit} -p1
 
-# Hard fix for bundled libs
-find -type f -name '*.py' -exec sed -i \
-  -e "s/from \.*externals.six/from six/"                             \
-  -e "s/from nipy.externals.six/from six/"                           \
-  -e "s/from nipy.externals import six/import six/"                  \
-  -e "s/from nipy.externals.argparse/from argparse/"                 \
-  -e "s/import nipy.externals.argparse as argparse/import argparse/" \
-  -e "s/from \.*externals.transforms3d/from transforms3d/"           \
-  {} ';'
-sed -i -e "/config.add_subpackage(.externals.)/d" nipy/setup.py
+# Add dependencies on libraries that are unbundled downstream to the metadata:
+line="requirement_kwargs['install_requires'].extend(['six', 'transforms3d'])"
+sed -r -i "s/^(def main|setup)/# Unbundled:\\n${line}\\n&/" setup.py
+
+# Some bundled pure-Python libraries have been replaced with dependencies:
+#   - python3dist(transforms3d)
+#   - python3dist(six)
+# Begin by removing the subpackage for bundled dependencies:
 rm -vrf nipy/externals/
+# Now fix the imports. The find-then-modify pattern keeps us from discarding
+# mtimes on any sources that do not need modification.
+find . -type f -exec gawk \
+    '/(from|import) (\.+|nipy\.)externals/ { print FILENAME }' '{}' '+' |
+   xargs -r -t sed -r -i \
+       -e 's/(from (nipy|\.*)\.externals )import/import/' \
+       -e 's/from ((nipy|\.*)\.externals\.)([^ ]+) import/from \3 import/'
+sed -r -i '/config\.add_subpackage\(.externals.\)/d' nipy/setup.py
+
+# Remove bundled lapack
 rm -rf lib/lapack_lite/
 
 find examples -type f -name '*.py' -exec sed -i '1{\@^#!/usr/bin/env python@d}' {} ';'
@@ -167,6 +189,7 @@ popd
 - Remove spurious BuildRequires on git-core
 - Update URL to HTTPS
 - Update description from upstream
+- Handle dependencies more methodically
 
 * Fri Jan 20 2023 Fedora Release Engineering <releng@fedoraproject.org> - 0.5.0-7
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_38_Mass_Rebuild

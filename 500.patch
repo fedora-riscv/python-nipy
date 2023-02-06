@@ -1,0 +1,21 @@
+From 3478e96051fcbc042d2fd4822b5bc72f7404f0d6 Mon Sep 17 00:00:00 2001
+From: "Benjamin A. Beasley" <code@musicinmybrain.net>
+Date: Mon, 6 Feb 2023 09:52:44 -0500
+Subject: [PATCH] Ensure numpy is in install_requires, not only setup_requires
+
+---
+ setup.py | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/setup.py b/setup.py
+index 6cb8ca747..d400d610c 100755
+--- a/setup.py
++++ b/setup.py
+@@ -46,6 +46,7 @@ def configuration(parent_package='',top_path=None):
+ # Hard and soft dependency checking
+ DEPS = (
+     ('numpy', INFO_VARS['NUMPY_MIN_VERSION'], 'setup_requires'),
++    ('numpy', INFO_VARS['NUMPY_MIN_VERSION'], 'install_requires'),
+     ('scipy', INFO_VARS['SCIPY_MIN_VERSION'], 'install_requires'),
+     ('nibabel', INFO_VARS['NIBABEL_MIN_VERSION'], 'install_requires'),
+     ('sympy', INFO_VARS['SYMPY_MIN_VERSION'], 'install_requires'),

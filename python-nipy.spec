@@ -105,8 +105,7 @@ sed -r -i '/config\.add_subpackage\(.externals.\)/d' nipy/setup.py
 # Remove bundled lapack
 rm -rf lib/lapack_lite/
 
-find examples -type f -name '*.py' -exec sed -i '1{\@^#!/usr/bin/env python@d}' {} ';'
-
+%py3_shebang_fix examples
 
 
 %build
@@ -190,6 +189,7 @@ popd
 - Update URL to HTTPS
 - Update description from upstream
 - Handle dependencies more methodically
+- Allow the examples to retain shebangs (but do fix them)
 
 * Fri Jan 20 2023 Fedora Release Engineering <releng@fedoraproject.org> - 0.5.0-7
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_38_Mass_Rebuild

@@ -192,8 +192,9 @@ popd
 %files doc
 %license LICENSE
 
-%doc README.rst
 %doc AUTHOR
+%doc Changelog
+%doc README.rst
 %doc THANKS
 %doc examples/
 
@@ -208,6 +209,7 @@ popd
 - Handle dependencies more methodically
 - Allow the examples to retain shebangs (but do fix them)
 - Split docs/examples into a -doc subpackage and depend on nipy-data
+- Add Changelog to the documentation
 
 * Fri Jan 20 2023 Fedora Release Engineering <releng@fedoraproject.org> - 0.5.0-7
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_38_Mass_Rebuild

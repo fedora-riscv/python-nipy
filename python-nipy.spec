@@ -1,8 +1,8 @@
 # All tests run
 %bcond_without tests
 
-%global commit 35a5f5205ba2aa54f1f0524564a6f1f8dafb237f
-%global snapdate 20230103
+%global commit 9512cd93b7215b4c750be3968a600c06f2bd22f6
+%global snapdate 20230206
 
 Name:           python-nipy
 Version:        0.5.0^%(echo '%{commit}' | cut -b -7)git%{snapdate}
@@ -16,14 +16,6 @@ Source0:        https://github.com/nipy/nipy/archive/%{commit}/nipy-%{commit}.ta
 # Ensure numpy is in install_requires, not only setup_requires
 # https://github.com/nipy/nipy/pull/500
 Patch:          https://github.com/nipy/nipy/pull/500.patch
-# Remove a couple of unnecessary bundled dependencies
-# https://github.com/nipy/nipy/pull/501
-#   - configobj is not used anywhere
-#   - argparse is present in the standard library from Python 2.7 onwards
-Patch:          https://github.com/nipy/nipy/pull/501.patch
-# Fix a typo introduced in PR#501
-# https://github.com/nipy/nipy/pull/502
-Patch:          https://github.com/nipy/nipy/pull/502.patch
 
 BuildRequires:  gcc
 BuildRequires:  flexiblas-devel
@@ -185,7 +177,7 @@ PATH="%{buildroot}%{_bindir}:${PATH}" \
 
 %changelog
 * Wed Feb 08 2023 Benjamin A. Beasley <code@musicinmybrain.net> - 0.5.0^19971cdgit20230102-1
-- Update to a current snapshot (19971cd)
+- Update to a current snapshot (9512cd9)
 - Drop conditionals for EOL Fedoras and for EPEL8 and older
 - Remove spurious BuildRequires on git-core
 - Update URL to HTTPS

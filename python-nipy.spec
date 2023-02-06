@@ -9,7 +9,7 @@ Version:        0.5.0^%(echo '%{commit}' | cut -b -7)git%{snapdate}
 Release:        1%{?dist}
 Summary:        Neuroimaging in Python FMRI analysis package
 
-License:        BSD
+License:        BSD-3-Clause
 URL:            https://nipy.org/nipy
 Source0:        https://github.com/nipy/nipy/archive/%{commit}/nipy-%{commit}.tar.gz
 
@@ -198,6 +198,7 @@ PATH="%{buildroot}%{_bindir}:${PATH}" \
 - Remove generated Cython files in prep to prove they are re-generated
 - Downgrade matplotlib to a weak dep. and add it as a BR
 - Properly indicate partial scipy bundling
+- Update License to SPDX
 
 * Fri Jan 20 2023 Fedora Release Engineering <releng@fedoraproject.org> - 0.5.0-7
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_38_Mass_Rebuild

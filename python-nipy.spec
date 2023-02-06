@@ -14,7 +14,6 @@ Summary:        Neuroimaging in Python FMRI analysis package
 License:        BSD
 URL:            http://nipy.org/nipy
 Source0:        https://github.com/nipy/nipy/archive/%{commit}/nipy-%{commit}.tar.gz
-BuildRequires:  git-core
 BuildRequires:  gcc
 BuildRequires:  flexiblas-devel
 
@@ -138,6 +137,7 @@ popd
 * Wed Feb 08 2023 Benjamin A. Beasley <code@musicinmybrain.net> - 0.5.0^19971cdgit20230102-1
 - Update to a current snapshot (19971cd)
 - Drop conditionals for EOL Fedoras and for EPEL8 and older
+- Remove spurious BuildRequires on git-core
 
 * Fri Jan 20 2023 Fedora Release Engineering <releng@fedoraproject.org> - 0.5.0-7
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_38_Mass_Rebuild

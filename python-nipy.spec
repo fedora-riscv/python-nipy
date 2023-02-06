@@ -1,8 +1,6 @@
 # All tests run
 %bcond_without tests
 
-%global _docdir_fmt %{name}
-
 %global commit 35a5f5205ba2aa54f1f0524564a6f1f8dafb237f
 %global snapdate 20230103
 
@@ -14,8 +12,27 @@ Summary:        Neuroimaging in Python FMRI analysis package
 License:        BSD
 URL:            https://nipy.org/nipy
 Source0:        https://github.com/nipy/nipy/archive/%{commit}/nipy-%{commit}.tar.gz
+
 BuildRequires:  gcc
 BuildRequires:  flexiblas-devel
+BuildRequires:  python3-devel
+
+BuildRequires:  python3-setuptools
+BuildRequires:  python3-numpy
+BuildRequires:  python3-scipy
+BuildRequires:  python3-nibabel
+BuildRequires:  python3-sympy
+BuildRequires:  python3-Cython
+BuildRequires:  python3-pip
+
+%if %{with tests}
+BuildRequires:  python3-nose
+BuildRequires:  python3-six
+BuildRequires:  python3-transforms3d
+BuildRequires:  nipy-data
+%endif
+
+%global _docdir_fmt %{name}
 
 %global common_description %{expand:
 Neuroimaging tools for Python.
@@ -34,18 +51,10 @@ In NIPY we aim to:
 
 %description %{common_description}
 
+
 %package -n python3-nipy
 Summary:        %{summary}
-BuildRequires:  python3-devel python3-setuptools
-BuildRequires:  python3-numpy python3-scipy python3-nibabel python3-sympy
-BuildRequires:  python3-Cython python3-pip
-# Test deps
-%if %{with tests}
-BuildRequires:  python3-nose
-BuildRequires:  python3-six
-BuildRequires:  python3-transforms3d
-BuildRequires:  nipy-data
-%endif
+
 Requires:       python3-configobj
 Requires:       python3-numpy
 Requires:       python3-scipy
@@ -76,6 +85,8 @@ rm -rf lib/lapack_lite/
 
 find examples -type f -name '*.py' -exec sed -i '1{\@^#!/usr/bin/env python@d}' {} ';'
 
+
+
 %build
 export NIPY_EXTERNAL_LAPACK=1
 
@@ -83,6 +94,7 @@ export NIPY_EXTERNAL_LAPACK=1
 make recythonize
 
 %py3_build
+
 
 %install
 export NIPY_EXTERNAL_LAPACK=1
@@ -97,6 +109,7 @@ do
  sed -i '1{\@^#!/usr/bin/env python@d}' $lib
 done < tmp
 rm -f tmp
+
 
 %check
 %if %{with tests}
@@ -124,19 +137,28 @@ pushd build/lib.*-*
     mkdir -p ./${i%/*}/
     cp -a ../../$i ./$i
   done
-  PATH="%{buildroot}%{_bindir}:$PATH" PYTHONPATH="%{buildroot}/%{python3_sitearch}" nosetests-%{python3_version} -v %{?skip_tests:-e %{skip_tests}}
+  PATH="%{buildroot}%{_bindir}:$PATH" \
+      PYTHONPATH="%{buildroot}/%{python3_sitearch}" \
+      nosetests-%{python3_version} -v %{?skip_tests:-e %{skip_tests}}
 popd
 %endif
 
+
 %files -n python3-nipy
 %license LICENSE
-%doc README.rst AUTHOR THANKS examples
+%doc README.rst
+%doc AUTHOR
+%doc THANKS
+%doc examples/
+
 %{_bindir}/nipy_3dto4d
 %{_bindir}/nipy_4d_realign
 %{_bindir}/nipy_4dto3d
 %{_bindir}/nipy_diagnose
 %{_bindir}/nipy_tsdiffana
+
 %{python3_sitearch}/nipy*
+
 
 %changelog
 * Wed Feb 08 2023 Benjamin A. Beasley <code@musicinmybrain.net> - 0.5.0^19971cdgit20230102-1

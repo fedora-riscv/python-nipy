@@ -44,6 +44,8 @@ BuildRequires:  python3dist(sympy) >= 1
 # Unbundled and added to install_requires in %%prep:
 BuildRequires:  python3dist(six)
 BuildRequires:  python3dist(transforms3d)
+# A weak dependency; may enable more tests
+BuildRequires:  python3dist(matplotlib)
 
 %if %{with tests}
 # https://fedoraproject.org/wiki/Changes/DeprecateNose
@@ -75,7 +77,7 @@ In NIPY we aim to:
 Summary:        %{summary}
 
 # Adds various plotting functionality, but not an “official” dependency
-Requires:       python3dist(matplotlib)
+Recommends:     python3dist(matplotlib)
 
 Suggests:       nipy-data
 
@@ -184,6 +186,7 @@ PATH="%{buildroot}%{_bindir}:${PATH}" \
 - Add Changelog to the documentation
 - Simplify the tests to match .travis.yml
 - Remove generated Cython files in prep to prove they are re-generated
+- Downgrade matplotlib to a weak dep. and add it as a BR
 
 * Fri Jan 20 2023 Fedora Release Engineering <releng@fedoraproject.org> - 0.5.0-7
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_38_Mass_Rebuild

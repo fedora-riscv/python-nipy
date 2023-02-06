@@ -136,13 +136,6 @@ export NIPY_EXTERNAL_LAPACK=1
 
 find %{buildroot}%{python3_sitearch} -name '*.so' -exec chmod 755 {} ';'
 
-find %{buildroot}%{python3_sitearch}/nipy/ -name '*.py' -type f > tmp
-while read lib
-do
- sed -i '1{\@^#!/usr/bin/env python@d}' $lib
-done < tmp
-rm -f tmp
-
 
 %check
 %if %{with tests}

@@ -81,6 +81,18 @@ Suggests:       nipy-data
 
 %description -n python3-nipy %{common_description}
 
+
+%package doc
+Summary:        Documentation and examples for python-nipy
+
+BuildArch:      noarch
+
+Requires:       nipy-data
+
+%description doc
+%{summary}.
+
+
 %prep
 %autosetup -n nipy-%{commit} -p1
 
@@ -167,10 +179,6 @@ popd
 
 %files -n python3-nipy
 %license LICENSE
-%doc README.rst
-%doc AUTHOR
-%doc THANKS
-%doc examples/
 
 %{_bindir}/nipy_3dto4d
 %{_bindir}/nipy_4d_realign
@@ -179,6 +187,15 @@ popd
 %{_bindir}/nipy_tsdiffana
 
 %{python3_sitearch}/nipy*
+
+
+%files doc
+%license LICENSE
+
+%doc README.rst
+%doc AUTHOR
+%doc THANKS
+%doc examples/
 
 
 %changelog
@@ -190,6 +207,7 @@ popd
 - Update description from upstream
 - Handle dependencies more methodically
 - Allow the examples to retain shebangs (but do fix them)
+- Split docs/examples into a -doc subpackage and depend on nipy-data
 
 * Fri Jan 20 2023 Fedora Release Engineering <releng@fedoraproject.org> - 0.5.0-7
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_38_Mass_Rebuild

@@ -1,0 +1,1458 @@
+From a6de01c7484114aa52847edc400a386743e60c42 Mon Sep 17 00:00:00 2001
+From: "Benjamin A. Beasley" <code@musicinmybrain.net>
+Date: Tue, 7 Feb 2023 17:08:27 -0500
+Subject: [PATCH] Make six an external dependency
+
+Remove the bundled copy.
+---
+ nipy/algorithms/diagnostics/tsdiffplot.py     |   4 +-
+ nipy/algorithms/fwhm.py                       |   4 +-
+ .../registration/groupwise_registration.py    |   4 +-
+ nipy/algorithms/statistics/models/glm.py      |   4 +-
+ nipy/algorithms/statistics/models/nlsmodel.py |   4 +-
+ .../statistics/models/tests/test_anova.py     |   4 +-
+ nipy/core/image/image_list.py                 |   4 +-
+ nipy/core/reference/spaces.py                 |   4 +-
+ nipy/externals/six.py                         | 868 ------------------
+ nipy/fixes/numpy/testing/nosetester.py        |   2 +-
+ nipy/info.py                                  |   4 +-
+ nipy/io/files.py                              |   4 +-
+ nipy/io/tests/test_image_io.py                |   3 +-
+ nipy/labs/datasets/converters.py              |   4 +-
+ nipy/labs/mask.py                             |   3 +-
+ nipy/labs/spatial_models/bsa_io.py            |   4 +-
+ nipy/labs/spatial_models/discrete_domain.py   |   5 +-
+ nipy/labs/spatial_models/mroi.py              |   4 +-
+ nipy/labs/spatial_models/parcel_io.py         |   4 +-
+ .../utils/simul_multisubject_fmri_dataset.py  |   4 +-
+ nipy/modalities/fmri/glm.py                   |   4 +-
+ nipy/modalities/fmri/hemodynamic_models.py    |   4 +-
+ nipy/pkg_info.py                              |   2 +-
+ nipy/setup.py                                 |  11 +-
+ nipy/testing/decorators.py                    |   4 +-
+ nipy/utils/tests/test_arrays.py               |   4 +-
+ requirements.txt                              |   1 +
+ setup.py                                      |   2 +
+ 28 files changed, 53 insertions(+), 920 deletions(-)
+ delete mode 100644 nipy/externals/six.py
+
+diff --git a/nipy/algorithms/diagnostics/tsdiffplot.py b/nipy/algorithms/diagnostics/tsdiffplot.py
+index 8c265f99d1..97172bfb77 100644
+--- a/nipy/algorithms/diagnostics/tsdiffplot.py
++++ b/nipy/algorithms/diagnostics/tsdiffplot.py
+@@ -3,13 +3,13 @@
+ ''' plot tsdiffana parameters '''
+ from __future__ import absolute_import
+ 
++from six import string_types
++
+ import numpy as np
+ 
+ import nipy
+ from .timediff import time_slice_diffs
+ 
+-from nipy.externals.six import string_types
+-
+ def plot_tsdiffs(results, axes=None):
+     ''' Plotting routine for time series difference metrics
+ 
+diff --git a/nipy/algorithms/fwhm.py b/nipy/algorithms/fwhm.py
+index de04606ef3..fe5d2eceff 100644
+--- a/nipy/algorithms/fwhm.py
++++ b/nipy/algorithms/fwhm.py
+@@ -19,6 +19,8 @@
+ 
+ __docformat__ = 'restructuredtext'
+ 
++from six import Iterator
++
+ import numpy as np
+ from numpy.linalg import det
+ 
+@@ -26,8 +28,6 @@
+ 
+ from .utils.matrices import pos_recipr
+ 
+-from ..externals.six import Iterator
+-
+ class Resels(Iterator):
+     """The Resels class.
+     """
+diff --git a/nipy/algorithms/registration/groupwise_registration.py b/nipy/algorithms/registration/groupwise_registration.py
+index cf6908125b..e34181b749 100644
+--- a/nipy/algorithms/registration/groupwise_registration.py
++++ b/nipy/algorithms/registration/groupwise_registration.py
+@@ -17,9 +17,9 @@
+ import os
+ import warnings
+ 
+-import numpy as np
++from six import string_types
+ 
+-from ...externals.six import string_types
++import numpy as np
+ 
+ from nibabel.affines import apply_affine
+ 
+diff --git a/nipy/algorithms/statistics/models/glm.py b/nipy/algorithms/statistics/models/glm.py
+index 43d880e412..7459349e7c 100644
+--- a/nipy/algorithms/statistics/models/glm.py
++++ b/nipy/algorithms/statistics/models/glm.py
+@@ -7,13 +7,13 @@
+ """
+ from __future__ import absolute_import
+ 
++from six import Iterator
++
+ import numpy as np
+ 
+ from . import family
+ from .regression import WLSModel
+ 
+-from nipy.externals.six import Iterator
+-
+ 
+ class Model(WLSModel, Iterator):
+ 
+diff --git a/nipy/algorithms/statistics/models/nlsmodel.py b/nipy/algorithms/statistics/models/nlsmodel.py
+index 2954533aa1..89dcac5a41 100644
+--- a/nipy/algorithms/statistics/models/nlsmodel.py
++++ b/nipy/algorithms/statistics/models/nlsmodel.py
+@@ -6,13 +6,13 @@
+ from __future__ import absolute_import
+ __docformat__ = 'restructuredtext'
+ 
++from six import Iterator
++
+ import numpy as np
+ import numpy.linalg as npl
+ 
+ from .model import Model
+ 
+-from nipy.externals.six import Iterator
+-
+ 
+ class NLSModel(Model, Iterator):
+     """
+diff --git a/nipy/algorithms/statistics/models/tests/test_anova.py b/nipy/algorithms/statistics/models/tests/test_anova.py
+index f18ede9641..18468f631a 100644
+--- a/nipy/algorithms/statistics/models/tests/test_anova.py
++++ b/nipy/algorithms/statistics/models/tests/test_anova.py
+@@ -3,6 +3,8 @@
+ # vi: set ft=python sts=4 ts=4 sw=4 et:
+ from io import StringIO
+ 
++import six
++
+ import numpy as np
+ 
+ import scipy.stats
+@@ -11,8 +13,6 @@
+ from ....utils.matrices import matrix_rank
+ from ..regression import OLSModel
+ 
+-from nipy.externals import six
+-
+ from nipy.testing import (assert_equal, assert_almost_equal)
+ 
+ 
+diff --git a/nipy/core/image/image_list.py b/nipy/core/image/image_list.py
+index a526bcbb93..aef1fee4fa 100644
+--- a/nipy/core/image/image_list.py
++++ b/nipy/core/image/image_list.py
+@@ -3,13 +3,13 @@
+ # vi: set ft=python sts=4 ts=4 sw=4 et:
+ import warnings
+ 
++from six import Iterator
++
+ import numpy as np
+ 
+ from .image import Image, iter_axis, is_image
+ from ..reference.coordinate_map import (drop_io_dim, io_axis_indices, AxisError)
+ 
+-from ...externals.six import Iterator
+-
+ 
+ class ImageList(Iterator):
+     ''' Class to contain ND image as list of (N-1)D images '''
+diff --git a/nipy/core/reference/spaces.py b/nipy/core/reference/spaces.py
+index 69ffc2bc4c..68b9db591b 100644
+--- a/nipy/core/reference/spaces.py
++++ b/nipy/core/reference/spaces.py
+@@ -2,6 +2,8 @@
+ from __future__ import print_function
+ from __future__ import absolute_import
+ 
++from six import string_types
++
+ import numpy as np
+ 
+ from nibabel.affines import from_matvec
+@@ -11,8 +13,6 @@
+ from .coordinate_system import CoordSysMaker, is_coordsys, is_coordsys_maker
+ from .coordinate_map import CoordMapMaker
+ 
+-from ...externals.six import string_types
+-
+ # Legacy repr printing from numpy.
+ from nipy.testing import legacy_printing as setup_module  # noqa
+ 
+diff --git a/nipy/externals/six.py b/nipy/externals/six.py
+deleted file mode 100644
+index a104cb8715..0000000000
+--- a/nipy/externals/six.py
++++ /dev/null
+@@ -1,868 +0,0 @@
+-"""Utilities for writing code that runs on Python 2 and 3"""
+-
+-# Copyright (c) 2010-2015 Benjamin Peterson
+-#
+-# Permission is hereby granted, free of charge, to any person obtaining a copy
+-# of this software and associated documentation files (the "Software"), to deal
+-# in the Software without restriction, including without limitation the rights
+-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+-# copies of the Software, and to permit persons to whom the Software is
+-# furnished to do so, subject to the following conditions:
+-#
+-# The above copyright notice and this permission notice shall be included in all
+-# copies or substantial portions of the Software.
+-#
+-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+-# SOFTWARE.
+-
+-from __future__ import absolute_import
+-
+-import functools
+-import itertools
+-import operator
+-import sys
+-import types
+-
+-__author__ = "Benjamin Peterson <benjamin@python.org>"
+-__version__ = "1.9.0"
+-
+-
+-# Useful for very coarse version differentiation.
+-PY2 = sys.version_info[0] == 2
+-PY3 = sys.version_info[0] == 3
+-PY34 = sys.version_info[0:2] >= (3, 4)
+-
+-if PY3:
+-    string_types = str,
+-    integer_types = int,
+-    class_types = type,
+-    text_type = str
+-    binary_type = bytes
+-
+-    MAXSIZE = sys.maxsize
+-else:
+-    string_types = basestring,
+-    integer_types = (int, long)
+-    class_types = (type, types.ClassType)
+-    text_type = unicode
+-    binary_type = str
+-
+-    if sys.platform.startswith("java"):
+-        # Jython always uses 32 bits.
+-        MAXSIZE = int((1 << 31) - 1)
+-    else:
+-        # It's possible to have sizeof(long) != sizeof(Py_ssize_t).
+-        class X(object):
+-
+-            def __len__(self):
+-                return 1 << 31
+-        try:
+-            len(X())
+-        except OverflowError:
+-            # 32-bit
+-            MAXSIZE = int((1 << 31) - 1)
+-        else:
+-            # 64-bit
+-            MAXSIZE = int((1 << 63) - 1)
+-        del X
+-
+-
+-def _add_doc(func, doc):
+-    """Add documentation to a function."""
+-    func.__doc__ = doc
+-
+-
+-def _import_module(name):
+-    """Import module, returning the module after the last dot."""
+-    __import__(name)
+-    return sys.modules[name]
+-
+-
+-class _LazyDescr(object):
+-
+-    def __init__(self, name):
+-        self.name = name
+-
+-    def __get__(self, obj, tp):
+-        result = self._resolve()
+-        setattr(obj, self.name, result)  # Invokes __set__.
+-        try:
+-            # This is a bit ugly, but it avoids running this again by
+-            # removing this descriptor.
+-            delattr(obj.__class__, self.name)
+-        except AttributeError:
+-            pass
+-        return result
+-
+-
+-class MovedModule(_LazyDescr):
+-
+-    def __init__(self, name, old, new=None):
+-        super(MovedModule, self).__init__(name)
+-        if PY3:
+-            if new is None:
+-                new = name
+-            self.mod = new
+-        else:
+-            self.mod = old
+-
+-    def _resolve(self):
+-        return _import_module(self.mod)
+-
+-    def __getattr__(self, attr):
+-        _module = self._resolve()
+-        value = getattr(_module, attr)
+-        setattr(self, attr, value)
+-        return value
+-
+-
+-class _LazyModule(types.ModuleType):
+-
+-    def __init__(self, name):
+-        super(_LazyModule, self).__init__(name)
+-        self.__doc__ = self.__class__.__doc__
+-
+-    def __dir__(self):
+-        attrs = ["__doc__", "__name__"]
+-        attrs += [attr.name for attr in self._moved_attributes]
+-        return attrs
+-
+-    # Subclasses should override this
+-    _moved_attributes = []
+-
+-
+-class MovedAttribute(_LazyDescr):
+-
+-    def __init__(self, name, old_mod, new_mod, old_attr=None, new_attr=None):
+-        super(MovedAttribute, self).__init__(name)
+-        if PY3:
+-            if new_mod is None:
+-                new_mod = name
+-            self.mod = new_mod
+-            if new_attr is None:
+-                if old_attr is None:
+-                    new_attr = name
+-                else:
+-                    new_attr = old_attr
+-            self.attr = new_attr
+-        else:
+-            self.mod = old_mod
+-            if old_attr is None:
+-                old_attr = name
+-            self.attr = old_attr
+-
+-    def _resolve(self):
+-        module = _import_module(self.mod)
+-        return getattr(module, self.attr)
+-
+-
+-class _SixMetaPathImporter(object):
+-
+-    """
+-    A meta path importer to import six.moves and its submodules.
+-
+-    This class implements a PEP302 finder and loader. It should be compatible
+-    with Python 2.5 and all existing versions of Python3
+-    """
+-
+-    def __init__(self, six_module_name):
+-        self.name = six_module_name
+-        self.known_modules = {}
+-
+-    def _add_module(self, mod, *fullnames):
+-        for fullname in fullnames:
+-            self.known_modules[self.name + "." + fullname] = mod
+-
+-    def _get_module(self, fullname):
+-        return self.known_modules[self.name + "." + fullname]
+-
+-    def find_module(self, fullname, path=None):
+-        if fullname in self.known_modules:
+-            return self
+-        return None
+-
+-    def __get_module(self, fullname):
+-        try:
+-            return self.known_modules[fullname]
+-        except KeyError:
+-            raise ImportError("This loader does not know module " + fullname)
+-
+-    def load_module(self, fullname):
+-        try:
+-            # in case of a reload
+-            return sys.modules[fullname]
+-        except KeyError:
+-            pass
+-        mod = self.__get_module(fullname)
+-        if isinstance(mod, MovedModule):
+-            mod = mod._resolve()
+-        else:
+-            mod.__loader__ = self
+-        sys.modules[fullname] = mod
+-        return mod
+-
+-    def is_package(self, fullname):
+-        """
+-        Return true, if the named module is a package.
+-
+-        We need this method to get correct spec objects with
+-        Python 3.4 (see PEP451)
+-        """
+-        return hasattr(self.__get_module(fullname), "__path__")
+-
+-    def get_code(self, fullname):
+-        """Return None
+-
+-        Required, if is_package is implemented"""
+-        self.__get_module(fullname)  # eventually raises ImportError
+-        return None
+-    get_source = get_code  # same as get_code
+-
+-_importer = _SixMetaPathImporter(__name__)
+-
+-
+-class _MovedItems(_LazyModule):
+-
+-    """Lazy loading of moved objects"""
+-    __path__ = []  # mark as package
+-
+-
+-_moved_attributes = [
+-    MovedAttribute("cStringIO", "cStringIO", "io", "StringIO"),
+-    MovedAttribute("filter", "itertools", "builtins", "ifilter", "filter"),
+-    MovedAttribute("filterfalse", "itertools", "itertools", "ifilterfalse", "filterfalse"),
+-    MovedAttribute("input", "__builtin__", "builtins", "raw_input", "input"),
+-    MovedAttribute("intern", "__builtin__", "sys"),
+-    MovedAttribute("map", "itertools", "builtins", "imap", "map"),
+-    MovedAttribute("getcwd", "os", "os", "getcwdu", "getcwd"),
+-    MovedAttribute("getcwdb", "os", "os", "getcwd", "getcwdb"),
+-    MovedAttribute("range", "__builtin__", "builtins", "xrange", "range"),
+-    MovedAttribute("reload_module", "__builtin__", "importlib" if PY34 else "imp", "reload"),
+-    MovedAttribute("reduce", "__builtin__", "functools"),
+-    MovedAttribute("shlex_quote", "pipes", "shlex", "quote"),
+-    MovedAttribute("StringIO", "StringIO", "io"),
+-    MovedAttribute("UserDict", "UserDict", "collections"),
+-    MovedAttribute("UserList", "UserList", "collections"),
+-    MovedAttribute("UserString", "UserString", "collections"),
+-    MovedAttribute("xrange", "__builtin__", "builtins", "xrange", "range"),
+-    MovedAttribute("zip", "itertools", "builtins", "izip", "zip"),
+-    MovedAttribute("zip_longest", "itertools", "itertools", "izip_longest", "zip_longest"),
+-    MovedModule("builtins", "__builtin__"),
+-    MovedModule("configparser", "ConfigParser"),
+-    MovedModule("copyreg", "copy_reg"),
+-    MovedModule("dbm_gnu", "gdbm", "dbm.gnu"),
+-    MovedModule("_dummy_thread", "dummy_thread", "_dummy_thread"),
+-    MovedModule("http_cookiejar", "cookielib", "http.cookiejar"),
+-    MovedModule("http_cookies", "Cookie", "http.cookies"),
+-    MovedModule("html_entities", "htmlentitydefs", "html.entities"),
+-    MovedModule("html_parser", "HTMLParser", "html.parser"),
+-    MovedModule("http_client", "httplib", "http.client"),
+-    MovedModule("email_mime_multipart", "email.MIMEMultipart", "email.mime.multipart"),
+-    MovedModule("email_mime_nonmultipart", "email.MIMENonMultipart", "email.mime.nonmultipart"),
+-    MovedModule("email_mime_text", "email.MIMEText", "email.mime.text"),
+-    MovedModule("email_mime_base", "email.MIMEBase", "email.mime.base"),
+-    MovedModule("BaseHTTPServer", "BaseHTTPServer", "http.server"),
+-    MovedModule("CGIHTTPServer", "CGIHTTPServer", "http.server"),
+-    MovedModule("SimpleHTTPServer", "SimpleHTTPServer", "http.server"),
+-    MovedModule("cPickle", "cPickle", "pickle"),
+-    MovedModule("queue", "Queue"),
+-    MovedModule("reprlib", "repr"),
+-    MovedModule("socketserver", "SocketServer"),
+-    MovedModule("_thread", "thread", "_thread"),
+-    MovedModule("tkinter", "Tkinter"),
+-    MovedModule("tkinter_dialog", "Dialog", "tkinter.dialog"),
+-    MovedModule("tkinter_filedialog", "FileDialog", "tkinter.filedialog"),
+-    MovedModule("tkinter_scrolledtext", "ScrolledText", "tkinter.scrolledtext"),
+-    MovedModule("tkinter_simpledialog", "SimpleDialog", "tkinter.simpledialog"),
+-    MovedModule("tkinter_tix", "Tix", "tkinter.tix"),
+-    MovedModule("tkinter_ttk", "ttk", "tkinter.ttk"),
+-    MovedModule("tkinter_constants", "Tkconstants", "tkinter.constants"),
+-    MovedModule("tkinter_dnd", "Tkdnd", "tkinter.dnd"),
+-    MovedModule("tkinter_colorchooser", "tkColorChooser",
+-                "tkinter.colorchooser"),
+-    MovedModule("tkinter_commondialog", "tkCommonDialog",
+-                "tkinter.commondialog"),
+-    MovedModule("tkinter_tkfiledialog", "tkFileDialog", "tkinter.filedialog"),
+-    MovedModule("tkinter_font", "tkFont", "tkinter.font"),
+-    MovedModule("tkinter_messagebox", "tkMessageBox", "tkinter.messagebox"),
+-    MovedModule("tkinter_tksimpledialog", "tkSimpleDialog",
+-                "tkinter.simpledialog"),
+-    MovedModule("urllib_parse", __name__ + ".moves.urllib_parse", "urllib.parse"),
+-    MovedModule("urllib_error", __name__ + ".moves.urllib_error", "urllib.error"),
+-    MovedModule("urllib", __name__ + ".moves.urllib", __name__ + ".moves.urllib"),
+-    MovedModule("urllib_robotparser", "robotparser", "urllib.robotparser"),
+-    MovedModule("xmlrpc_client", "xmlrpclib", "xmlrpc.client"),
+-    MovedModule("xmlrpc_server", "SimpleXMLRPCServer", "xmlrpc.server"),
+-]
+-# Add windows specific modules.
+-if sys.platform == "win32":
+-    _moved_attributes += [
+-        MovedModule("winreg", "_winreg"),
+-    ]
+-
+-for attr in _moved_attributes:
+-    setattr(_MovedItems, attr.name, attr)
+-    if isinstance(attr, MovedModule):
+-        _importer._add_module(attr, "moves." + attr.name)
+-del attr
+-
+-_MovedItems._moved_attributes = _moved_attributes
+-
+-moves = _MovedItems(__name__ + ".moves")
+-_importer._add_module(moves, "moves")
+-
+-
+-class Module_six_moves_urllib_parse(_LazyModule):
+-
+-    """Lazy loading of moved objects in six.moves.urllib_parse"""
+-
+-
+-_urllib_parse_moved_attributes = [
+-    MovedAttribute("ParseResult", "urlparse", "urllib.parse"),
+-    MovedAttribute("SplitResult", "urlparse", "urllib.parse"),
+-    MovedAttribute("parse_qs", "urlparse", "urllib.parse"),
+-    MovedAttribute("parse_qsl", "urlparse", "urllib.parse"),
+-    MovedAttribute("urldefrag", "urlparse", "urllib.parse"),
+-    MovedAttribute("urljoin", "urlparse", "urllib.parse"),
+-    MovedAttribute("urlparse", "urlparse", "urllib.parse"),
+-    MovedAttribute("urlsplit", "urlparse", "urllib.parse"),
+-    MovedAttribute("urlunparse", "urlparse", "urllib.parse"),
+-    MovedAttribute("urlunsplit", "urlparse", "urllib.parse"),
+-    MovedAttribute("quote", "urllib", "urllib.parse"),
+-    MovedAttribute("quote_plus", "urllib", "urllib.parse"),
+-    MovedAttribute("unquote", "urllib", "urllib.parse"),
+-    MovedAttribute("unquote_plus", "urllib", "urllib.parse"),
+-    MovedAttribute("urlencode", "urllib", "urllib.parse"),
+-    MovedAttribute("splitquery", "urllib", "urllib.parse"),
+-    MovedAttribute("splittag", "urllib", "urllib.parse"),
+-    MovedAttribute("splituser", "urllib", "urllib.parse"),
+-    MovedAttribute("uses_fragment", "urlparse", "urllib.parse"),
+-    MovedAttribute("uses_netloc", "urlparse", "urllib.parse"),
+-    MovedAttribute("uses_params", "urlparse", "urllib.parse"),
+-    MovedAttribute("uses_query", "urlparse", "urllib.parse"),
+-    MovedAttribute("uses_relative", "urlparse", "urllib.parse"),
+-]
+-for attr in _urllib_parse_moved_attributes:
+-    setattr(Module_six_moves_urllib_parse, attr.name, attr)
+-del attr
+-
+-Module_six_moves_urllib_parse._moved_attributes = _urllib_parse_moved_attributes
+-
+-_importer._add_module(Module_six_moves_urllib_parse(__name__ + ".moves.urllib_parse"),
+-                      "moves.urllib_parse", "moves.urllib.parse")
+-
+-
+-class Module_six_moves_urllib_error(_LazyModule):
+-
+-    """Lazy loading of moved objects in six.moves.urllib_error"""
+-
+-
+-_urllib_error_moved_attributes = [
+-    MovedAttribute("URLError", "urllib2", "urllib.error"),
+-    MovedAttribute("HTTPError", "urllib2", "urllib.error"),
+-    MovedAttribute("ContentTooShortError", "urllib", "urllib.error"),
+-]
+-for attr in _urllib_error_moved_attributes:
+-    setattr(Module_six_moves_urllib_error, attr.name, attr)
+-del attr
+-
+-Module_six_moves_urllib_error._moved_attributes = _urllib_error_moved_attributes
+-
+-_importer._add_module(Module_six_moves_urllib_error(__name__ + ".moves.urllib.error"),
+-                      "moves.urllib_error", "moves.urllib.error")
+-
+-
+-class Module_six_moves_urllib_request(_LazyModule):
+-
+-    """Lazy loading of moved objects in six.moves.urllib_request"""
+-
+-
+-_urllib_request_moved_attributes = [
+-    MovedAttribute("urlopen", "urllib2", "urllib.request"),
+-    MovedAttribute("install_opener", "urllib2", "urllib.request"),
+-    MovedAttribute("build_opener", "urllib2", "urllib.request"),
+-    MovedAttribute("pathname2url", "urllib", "urllib.request"),
+-    MovedAttribute("url2pathname", "urllib", "urllib.request"),
+-    MovedAttribute("getproxies", "urllib", "urllib.request"),
+-    MovedAttribute("Request", "urllib2", "urllib.request"),
+-    MovedAttribute("OpenerDirector", "urllib2", "urllib.request"),
+-    MovedAttribute("HTTPDefaultErrorHandler", "urllib2", "urllib.request"),
+-    MovedAttribute("HTTPRedirectHandler", "urllib2", "urllib.request"),
+-    MovedAttribute("HTTPCookieProcessor", "urllib2", "urllib.request"),
+-    MovedAttribute("ProxyHandler", "urllib2", "urllib.request"),
+-    MovedAttribute("BaseHandler", "urllib2", "urllib.request"),
+-    MovedAttribute("HTTPPasswordMgr", "urllib2", "urllib.request"),
+-    MovedAttribute("HTTPPasswordMgrWithDefaultRealm", "urllib2", "urllib.request"),
+-    MovedAttribute("AbstractBasicAuthHandler", "urllib2", "urllib.request"),
+-    MovedAttribute("HTTPBasicAuthHandler", "urllib2", "urllib.request"),
+-    MovedAttribute("ProxyBasicAuthHandler", "urllib2", "urllib.request"),
+-    MovedAttribute("AbstractDigestAuthHandler", "urllib2", "urllib.request"),
+-    MovedAttribute("HTTPDigestAuthHandler", "urllib2", "urllib.request"),
+-    MovedAttribute("ProxyDigestAuthHandler", "urllib2", "urllib.request"),
+-    MovedAttribute("HTTPHandler", "urllib2", "urllib.request"),
+-    MovedAttribute("HTTPSHandler", "urllib2", "urllib.request"),
+-    MovedAttribute("FileHandler", "urllib2", "urllib.request"),
+-    MovedAttribute("FTPHandler", "urllib2", "urllib.request"),
+-    MovedAttribute("CacheFTPHandler", "urllib2", "urllib.request"),
+-    MovedAttribute("UnknownHandler", "urllib2", "urllib.request"),
+-    MovedAttribute("HTTPErrorProcessor", "urllib2", "urllib.request"),
+-    MovedAttribute("urlretrieve", "urllib", "urllib.request"),
+-    MovedAttribute("urlcleanup", "urllib", "urllib.request"),
+-    MovedAttribute("URLopener", "urllib", "urllib.request"),
+-    MovedAttribute("FancyURLopener", "urllib", "urllib.request"),
+-    MovedAttribute("proxy_bypass", "urllib", "urllib.request"),
+-]
+-for attr in _urllib_request_moved_attributes:
+-    setattr(Module_six_moves_urllib_request, attr.name, attr)
+-del attr
+-
+-Module_six_moves_urllib_request._moved_attributes = _urllib_request_moved_attributes
+-
+-_importer._add_module(Module_six_moves_urllib_request(__name__ + ".moves.urllib.request"),
+-                      "moves.urllib_request", "moves.urllib.request")
+-
+-
+-class Module_six_moves_urllib_response(_LazyModule):
+-
+-    """Lazy loading of moved objects in six.moves.urllib_response"""
+-
+-
+-_urllib_response_moved_attributes = [
+-    MovedAttribute("addbase", "urllib", "urllib.response"),
+-    MovedAttribute("addclosehook", "urllib", "urllib.response"),
+-    MovedAttribute("addinfo", "urllib", "urllib.response"),
+-    MovedAttribute("addinfourl", "urllib", "urllib.response"),
+-]
+-for attr in _urllib_response_moved_attributes:
+-    setattr(Module_six_moves_urllib_response, attr.name, attr)
+-del attr
+-
+-Module_six_moves_urllib_response._moved_attributes = _urllib_response_moved_attributes
+-
+-_importer._add_module(Module_six_moves_urllib_response(__name__ + ".moves.urllib.response"),
+-                      "moves.urllib_response", "moves.urllib.response")
+-
+-
+-class Module_six_moves_urllib_robotparser(_LazyModule):
+-
+-    """Lazy loading of moved objects in six.moves.urllib_robotparser"""
+-
+-
+-_urllib_robotparser_moved_attributes = [
+-    MovedAttribute("RobotFileParser", "robotparser", "urllib.robotparser"),
+-]
+-for attr in _urllib_robotparser_moved_attributes:
+-    setattr(Module_six_moves_urllib_robotparser, attr.name, attr)
+-del attr
+-
+-Module_six_moves_urllib_robotparser._moved_attributes = _urllib_robotparser_moved_attributes
+-
+-_importer._add_module(Module_six_moves_urllib_robotparser(__name__ + ".moves.urllib.robotparser"),
+-                      "moves.urllib_robotparser", "moves.urllib.robotparser")
+-
+-
+-class Module_six_moves_urllib(types.ModuleType):
+-
+-    """Create a six.moves.urllib namespace that resembles the Python 3 namespace"""
+-    __path__ = []  # mark as package
+-    parse = _importer._get_module("moves.urllib_parse")
+-    error = _importer._get_module("moves.urllib_error")
+-    request = _importer._get_module("moves.urllib_request")
+-    response = _importer._get_module("moves.urllib_response")
+-    robotparser = _importer._get_module("moves.urllib_robotparser")
+-
+-    def __dir__(self):
+-        return ['parse', 'error', 'request', 'response', 'robotparser']
+-
+-_importer._add_module(Module_six_moves_urllib(__name__ + ".moves.urllib"),
+-                      "moves.urllib")
+-
+-
+-def add_move(move):
+-    """Add an item to six.moves."""
+-    setattr(_MovedItems, move.name, move)
+-
+-
+-def remove_move(name):
+-    """Remove item from six.moves."""
+-    try:
+-        delattr(_MovedItems, name)
+-    except AttributeError:
+-        try:
+-            del moves.__dict__[name]
+-        except KeyError:
+-            raise AttributeError("no such move, %r" % (name,))
+-
+-
+-if PY3:
+-    _meth_func = "__func__"
+-    _meth_self = "__self__"
+-
+-    _func_closure = "__closure__"
+-    _func_code = "__code__"
+-    _func_defaults = "__defaults__"
+-    _func_globals = "__globals__"
+-else:
+-    _meth_func = "im_func"
+-    _meth_self = "im_self"
+-
+-    _func_closure = "func_closure"
+-    _func_code = "func_code"
+-    _func_defaults = "func_defaults"
+-    _func_globals = "func_globals"
+-
+-
+-try:
+-    advance_iterator = next
+-except NameError:
+-    def advance_iterator(it):
+-        return it.next()
+-next = advance_iterator
+-
+-
+-try:
+-    callable = callable
+-except NameError:
+-    def callable(obj):
+-        return any("__call__" in klass.__dict__ for klass in type(obj).__mro__)
+-
+-
+-if PY3:
+-    def get_unbound_function(unbound):
+-        return unbound
+-
+-    create_bound_method = types.MethodType
+-
+-    def create_unbound_method(func, cls):
+-        return func
+-
+-    Iterator = object
+-else:
+-    def get_unbound_function(unbound):
+-        return unbound.im_func
+-
+-    def create_bound_method(func, obj):
+-        return types.MethodType(func, obj, obj.__class__)
+-
+-    def create_unbound_method(func, cls):
+-        return types.MethodType(func, None, cls)
+-
+-    class Iterator(object):
+-
+-        def next(self):
+-            return type(self).__next__(self)
+-
+-    callable = callable
+-_add_doc(get_unbound_function,
+-         """Get the function out of a possibly unbound function""")
+-
+-
+-get_method_function = operator.attrgetter(_meth_func)
+-get_method_self = operator.attrgetter(_meth_self)
+-get_function_closure = operator.attrgetter(_func_closure)
+-get_function_code = operator.attrgetter(_func_code)
+-get_function_defaults = operator.attrgetter(_func_defaults)
+-get_function_globals = operator.attrgetter(_func_globals)
+-
+-
+-if PY3:
+-    def iterkeys(d, **kw):
+-        return iter(d.keys(**kw))
+-
+-    def itervalues(d, **kw):
+-        return iter(d.values(**kw))
+-
+-    def iteritems(d, **kw):
+-        return iter(d.items(**kw))
+-
+-    def iterlists(d, **kw):
+-        return iter(d.lists(**kw))
+-
+-    viewkeys = operator.methodcaller("keys")
+-
+-    viewvalues = operator.methodcaller("values")
+-
+-    viewitems = operator.methodcaller("items")
+-else:
+-    def iterkeys(d, **kw):
+-        return d.iterkeys(**kw)
+-
+-    def itervalues(d, **kw):
+-        return d.itervalues(**kw)
+-
+-    def iteritems(d, **kw):
+-        return d.iteritems(**kw)
+-
+-    def iterlists(d, **kw):
+-        return d.iterlists(**kw)
+-
+-    viewkeys = operator.methodcaller("viewkeys")
+-
+-    viewvalues = operator.methodcaller("viewvalues")
+-
+-    viewitems = operator.methodcaller("viewitems")
+-
+-_add_doc(iterkeys, "Return an iterator over the keys of a dictionary.")
+-_add_doc(itervalues, "Return an iterator over the values of a dictionary.")
+-_add_doc(iteritems,
+-         "Return an iterator over the (key, value) pairs of a dictionary.")
+-_add_doc(iterlists,
+-         "Return an iterator over the (key, [values]) pairs of a dictionary.")
+-
+-
+-if PY3:
+-    def b(s):
+-        return s.encode("latin-1")
+-
+-    def u(s):
+-        return s
+-    unichr = chr
+-    import struct
+-    int2byte = struct.Struct(">B").pack
+-    del struct
+-    byte2int = operator.itemgetter(0)
+-    indexbytes = operator.getitem
+-    iterbytes = iter
+-    import io
+-    StringIO = io.StringIO
+-    BytesIO = io.BytesIO
+-    _assertCountEqual = "assertCountEqual"
+-    if sys.version_info[1] <= 1:
+-        _assertRaisesRegex = "assertRaisesRegexp"
+-        _assertRegex = "assertRegexpMatches"
+-    else:
+-        _assertRaisesRegex = "assertRaisesRegex"
+-        _assertRegex = "assertRegex"
+-else:
+-    def b(s):
+-        return s
+-    # Workaround for standalone backslash
+-
+-    def u(s):
+-        return unicode(s.replace(r'\\', r'\\\\'), "unicode_escape")
+-    unichr = unichr
+-    int2byte = chr
+-
+-    def byte2int(bs):
+-        return ord(bs[0])
+-
+-    def indexbytes(buf, i):
+-        return ord(buf[i])
+-    iterbytes = functools.partial(itertools.imap, ord)
+-    import StringIO
+-    StringIO = BytesIO = StringIO.StringIO
+-    _assertCountEqual = "assertItemsEqual"
+-    _assertRaisesRegex = "assertRaisesRegexp"
+-    _assertRegex = "assertRegexpMatches"
+-_add_doc(b, """Byte literal""")
+-_add_doc(u, """Text literal""")
+-
+-
+-def assertCountEqual(self, *args, **kwargs):
+-    return getattr(self, _assertCountEqual)(*args, **kwargs)
+-
+-
+-def assertRaisesRegex(self, *args, **kwargs):
+-    return getattr(self, _assertRaisesRegex)(*args, **kwargs)
+-
+-
+-def assertRegex(self, *args, **kwargs):
+-    return getattr(self, _assertRegex)(*args, **kwargs)
+-
+-
+-if PY3:
+-    exec_ = getattr(moves.builtins, "exec")
+-
+-    def reraise(tp, value, tb=None):
+-        if value is None:
+-            value = tp()
+-        if value.__traceback__ is not tb:
+-            raise value.with_traceback(tb)
+-        raise value
+-
+-else:
+-    def exec_(_code_, _globs_=None, _locs_=None):
+-        """Execute code in a namespace."""
+-        if _globs_ is None:
+-            frame = sys._getframe(1)
+-            _globs_ = frame.f_globals
+-            if _locs_ is None:
+-                _locs_ = frame.f_locals
+-            del frame
+-        elif _locs_ is None:
+-            _locs_ = _globs_
+-        exec("""exec _code_ in _globs_, _locs_""")
+-
+-    exec_("""def reraise(tp, value, tb=None):
+-    raise tp, value, tb
+-""")
+-
+-
+-if sys.version_info[:2] == (3, 2):
+-    exec_("""def raise_from(value, from_value):
+-    if from_value is None:
+-        raise value
+-    raise value from from_value
+-""")
+-elif sys.version_info[:2] > (3, 2):
+-    exec_("""def raise_from(value, from_value):
+-    raise value from from_value
+-""")
+-else:
+-    def raise_from(value, from_value):
+-        raise value
+-
+-
+-print_ = getattr(moves.builtins, "print", None)
+-if print_ is None:
+-    def print_(*args, **kwargs):
+-        """The new-style print function for Python 2.4 and 2.5."""
+-        fp = kwargs.pop("file", sys.stdout)
+-        if fp is None:
+-            return
+-
+-        def write(data):
+-            if not isinstance(data, basestring):
+-                data = str(data)
+-            # If the file has an encoding, encode unicode with it.
+-            if (isinstance(fp, file) and
+-                    isinstance(data, unicode) and
+-                    fp.encoding is not None):
+-                errors = getattr(fp, "errors", None)
+-                if errors is None:
+-                    errors = "strict"
+-                data = data.encode(fp.encoding, errors)
+-            fp.write(data)
+-        want_unicode = False
+-        sep = kwargs.pop("sep", None)
+-        if sep is not None:
+-            if isinstance(sep, unicode):
+-                want_unicode = True
+-            elif not isinstance(sep, str):
+-                raise TypeError("sep must be None or a string")
+-        end = kwargs.pop("end", None)
+-        if end is not None:
+-            if isinstance(end, unicode):
+-                want_unicode = True
+-            elif not isinstance(end, str):
+-                raise TypeError("end must be None or a string")
+-        if kwargs:
+-            raise TypeError("invalid keyword arguments to print()")
+-        if not want_unicode:
+-            for arg in args:
+-                if isinstance(arg, unicode):
+-                    want_unicode = True
+-                    break
+-        if want_unicode:
+-            newline = unicode("\n")
+-            space = unicode(" ")
+-        else:
+-            newline = "\n"
+-            space = " "
+-        if sep is None:
+-            sep = space
+-        if end is None:
+-            end = newline
+-        for i, arg in enumerate(args):
+-            if i:
+-                write(sep)
+-            write(arg)
+-        write(end)
+-if sys.version_info[:2] < (3, 3):
+-    _print = print_
+-
+-    def print_(*args, **kwargs):
+-        fp = kwargs.get("file", sys.stdout)
+-        flush = kwargs.pop("flush", False)
+-        _print(*args, **kwargs)
+-        if flush and fp is not None:
+-            fp.flush()
+-
+-_add_doc(reraise, """Reraise an exception.""")
+-
+-if sys.version_info[0:2] < (3, 4):
+-    def wraps(wrapped, assigned=functools.WRAPPER_ASSIGNMENTS,
+-              updated=functools.WRAPPER_UPDATES):
+-        def wrapper(f):
+-            f = functools.wraps(wrapped, assigned, updated)(f)
+-            f.__wrapped__ = wrapped
+-            return f
+-        return wrapper
+-else:
+-    wraps = functools.wraps
+-
+-
+-def with_metaclass(meta, *bases):
+-    """Create a base class with a metaclass."""
+-    # This requires a bit of explanation: the basic idea is to make a dummy
+-    # metaclass for one level of class instantiation that replaces itself with
+-    # the actual metaclass.
+-    class metaclass(meta):
+-
+-        def __new__(cls, name, this_bases, d):
+-            return meta(name, bases, d)
+-    return type.__new__(metaclass, 'temporary_class', (), {})
+-
+-
+-def add_metaclass(metaclass):
+-    """Class decorator for creating a class with a metaclass."""
+-    def wrapper(cls):
+-        orig_vars = cls.__dict__.copy()
+-        slots = orig_vars.get('__slots__')
+-        if slots is not None:
+-            if isinstance(slots, str):
+-                slots = [slots]
+-            for slots_var in slots:
+-                orig_vars.pop(slots_var)
+-        orig_vars.pop('__dict__', None)
+-        orig_vars.pop('__weakref__', None)
+-        return metaclass(cls.__name__, cls.__bases__, orig_vars)
+-    return wrapper
+-
+-
+-def python_2_unicode_compatible(klass):
+-    """
+-    A decorator that defines __unicode__ and __str__ methods under Python 2.
+-    Under Python 3 it does nothing.
+-
+-    To support Python 2 and 3 with a single code base, define a __str__ method
+-    returning text and apply this decorator to the class.
+-    """
+-    if PY2:
+-        if '__str__' not in klass.__dict__:
+-            raise ValueError("@python_2_unicode_compatible cannot be applied "
+-                             "to %s because it doesn't define __str__()." %
+-                             klass.__name__)
+-        klass.__unicode__ = klass.__str__
+-        klass.__str__ = lambda self: self.__unicode__().encode('utf-8')
+-    return klass
+-
+-
+-# Complete the moves implementation.
+-# This code is at the end of this module to speed up module loading.
+-# Turn this module into a package.
+-__path__ = []  # required for PEP 302 and PEP 451
+-__package__ = __name__  # see PEP 366 @ReservedAssignment
+-if globals().get("__spec__") is not None:
+-    __spec__.submodule_search_locations = []  # PEP 451 @UndefinedVariable
+-# Remove other six meta path importers, since they cause problems. This can
+-# happen if six is removed from sys.modules and then reloaded. (Setuptools does
+-# this for some reason.)
+-if sys.meta_path:
+-    for i, importer in enumerate(sys.meta_path):
+-        # Here's some real nastiness: Another "instance" of the six module might
+-        # be floating around. Therefore, we can't use isinstance() to check for
+-        # the six meta path importer, since the other six instance will have
+-        # inserted an importer with different class.
+-        if (type(importer).__name__ == "_SixMetaPathImporter" and
+-                importer.name == __name__):
+-            del sys.meta_path[i]
+-            break
+-    del i, importer
+-# Finally, add the importer to the meta path import hook.
+-sys.meta_path.append(_importer)
+diff --git a/nipy/fixes/numpy/testing/nosetester.py b/nipy/fixes/numpy/testing/nosetester.py
+index 355ab0d50b..4fe3a862cc 100644
+--- a/nipy/fixes/numpy/testing/nosetester.py
++++ b/nipy/fixes/numpy/testing/nosetester.py
+@@ -8,7 +8,7 @@
+ import os
+ import sys
+ 
+-from nipy.externals.six import string_types
++from six import string_types
+ 
+ def get_package_name(filepath):
+     """
+diff --git a/nipy/info.py b/nipy/info.py
+index 8d4321527e..a84202b263 100644
+--- a/nipy/info.py
++++ b/nipy/info.py
+@@ -141,6 +141,7 @@
+ .. _matplotlib: http://matplotlib.org
+ .. _nose: http://nose.readthedocs.org/en/latest
+ .. _mock: https://pypi.python.org/pypi/mock
++.. _six: https://six.readthedocs.io
+ .. _installation instructions: http://nipy.org/nipy/users/installation.html
+ """
+ 
+@@ -154,6 +155,7 @@
+ SYMPY_MIN_VERSION = '1.0'
+ MAYAVI_MIN_VERSION = '3.0'
+ CYTHON_MIN_VERSION = '0.12.1'
++SIX_MIN_VERSION = '1.9'
+ 
+ NAME                = 'nipy'
+ MAINTAINER          = "nipy developers"
+@@ -172,7 +174,7 @@
+ MICRO               = _version_micro
+ ISRELEASE           = _version_extra == ''
+ VERSION             = __version__
+-REQUIRES            = ["numpy", "scipy", "sympy(<1.6)", "nibabel"]
++REQUIRES            = ["numpy", "scipy", "sympy(<1.6)", "nibabel", "six"]
+ STATUS              = 'beta'
+ 
+ # Versions and locations of optional data packages
+diff --git a/nipy/io/files.py b/nipy/io/files.py
+index 85fe17dd89..947a16c89d 100644
+--- a/nipy/io/files.py
++++ b/nipy/io/files.py
+@@ -14,6 +14,8 @@
+ 
+ import os
+ 
++from six import string_types
++
+ import numpy as np
+ 
+ import nibabel as nib
+@@ -24,8 +26,6 @@
+ from .nifti_ref import (nipy2nifti, nifti2nipy)
+ from .nibcompat import get_dataobj, get_affine, get_header
+ 
+-from ..externals.six import string_types
+-
+ def load(filename):
+     """Load an image from the given filename.
+ 
+diff --git a/nipy/io/tests/test_image_io.py b/nipy/io/tests/test_image_io.py
+index 5c5d940f35..a635ca375d 100644
+--- a/nipy/io/tests/test_image_io.py
++++ b/nipy/io/tests/test_image_io.py
+@@ -3,6 +3,8 @@
+ # vi: set ft=python sts=4 ts=4 sw=4 et:
+ from os.path import dirname, join as pjoin
+ 
++import six
++
+ import numpy as np
+ 
+ import nibabel as nib
+@@ -20,7 +22,6 @@
+ 
+ from nipy.testing.decorators import if_templates
+ from nipy.utils import templates, DataError
+-from nipy.externals import six
+ from nibabel.tests.test_round_trip import big_bad_ulp
+ 
+ gimg = None
+diff --git a/nipy/labs/datasets/converters.py b/nipy/labs/datasets/converters.py
+index 1bd711ff9e..b586367b30 100644
+--- a/nipy/labs/datasets/converters.py
++++ b/nipy/labs/datasets/converters.py
+@@ -7,6 +7,8 @@
+ from __future__ import absolute_import
+ import os
+ 
++from six import string_types
++
+ import numpy as np
+ 
+ import nibabel as nib
+@@ -15,8 +17,6 @@
+ from nipy.io.nibcompat import get_header, get_affine
+ from .volumes.volume_img import VolumeImg
+ 
+-from nipy.externals.six import string_types
+-
+ def as_volume_img(obj, copy=True, squeeze=True, world_space=None):
+     """ Convert the input to a VolumeImg.
+ 
+diff --git a/nipy/labs/mask.py b/nipy/labs/mask.py
+index bae70cba3c..ec70e3fcdc 100644
+--- a/nipy/labs/mask.py
++++ b/nipy/labs/mask.py
+@@ -8,6 +8,8 @@
+ 
+ import math
+ 
++from six import string_types
++
+ # Major scientific libraries imports
+ import numpy as np
+ from scipy import ndimage
+@@ -16,7 +18,6 @@
+ from nibabel import load, nifti1, save
+ 
+ from ..io.nibcompat import get_header, get_affine, get_unscaled_data
+-from ..externals.six import string_types
+ 
+ ###############################################################################
+ # Operating on connect component
+diff --git a/nipy/labs/spatial_models/bsa_io.py b/nipy/labs/spatial_models/bsa_io.py
+index 13ea6ada3b..474429cc78 100644
+--- a/nipy/labs/spatial_models/bsa_io.py
++++ b/nipy/labs/spatial_models/bsa_io.py
+@@ -6,6 +6,8 @@
+ """
+ from __future__ import absolute_import
+ 
++from six import string_types
++
+ import numpy as np
+ import os.path as op
+ from nibabel import load, save, Nifti1Image
+@@ -15,8 +17,6 @@
+ from .discrete_domain import domain_from_image
+ from ...io.nibcompat import get_header, get_affine
+ 
+-from ...externals.six import string_types
+-
+ def make_bsa_image(
+     mask_images, stat_images, threshold=3., smin=0, sigma=5.,
+     prevalence_threshold=0, prevalence_pval=0.5, write_dir=None,
+diff --git a/nipy/labs/spatial_models/discrete_domain.py b/nipy/labs/spatial_models/discrete_domain.py
+index bfb29cd202..8f975996f3 100644
+--- a/nipy/labs/spatial_models/discrete_domain.py
++++ b/nipy/labs/spatial_models/discrete_domain.py
+@@ -7,6 +7,9 @@
+ Author: Bertrand Thirion, 2010
+ """
+ from __future__ import absolute_import
++
++from six import string_types
++
+ import numpy as np
+ import scipy.sparse as sp
+ 
+@@ -16,8 +19,6 @@
+ from nipy.algorithms.graph import (WeightedGraph, wgraph_from_coo_matrix,
+                                    wgraph_from_3d_grid)
+ 
+-from nipy.externals.six import string_types
+-
+ ##############################################################
+ # Ancillary functions
+ ##############################################################
+diff --git a/nipy/labs/spatial_models/mroi.py b/nipy/labs/spatial_models/mroi.py
+index c03a7e7a89..0a3d04489e 100644
+--- a/nipy/labs/spatial_models/mroi.py
++++ b/nipy/labs/spatial_models/mroi.py
+@@ -3,6 +3,8 @@
+ from __future__ import print_function
+ from __future__ import absolute_import
+ 
++from six import string_types
++
+ import numpy as np
+ 
+ from nibabel import load, Nifti1Image
+@@ -11,8 +13,6 @@
+ 
+ from . import discrete_domain as ddom
+ 
+-from nipy.externals.six import string_types
+-
+ ##############################################################################
+ # class SubDomains
+ ##############################################################################
+diff --git a/nipy/labs/spatial_models/parcel_io.py b/nipy/labs/spatial_models/parcel_io.py
+index 89030f8dcf..d50f50d2c8 100644
+--- a/nipy/labs/spatial_models/parcel_io.py
++++ b/nipy/labs/spatial_models/parcel_io.py
+@@ -12,6 +12,8 @@
+ import os.path
+ from warnings import warn
+ 
++from six import string_types
++
+ from nibabel import load, save, Nifti1Image
+ 
+ from nipy.io.nibcompat import get_header, get_affine
+@@ -20,8 +22,6 @@
+ from .mroi import SubDomains
+ from ..mask import intersect_masks
+ 
+-from nipy.externals.six import string_types
+-
+ warn('Module nipy.labs.spatial_models.parcel_io' + 
+      'deprecated, will be removed',
+      FutureWarning,
+diff --git a/nipy/labs/utils/simul_multisubject_fmri_dataset.py b/nipy/labs/utils/simul_multisubject_fmri_dataset.py
+index 1bbe157e61..af2150d7a9 100644
+--- a/nipy/labs/utils/simul_multisubject_fmri_dataset.py
++++ b/nipy/labs/utils/simul_multisubject_fmri_dataset.py
+@@ -9,6 +9,8 @@
+ """
+ from __future__ import absolute_import
+ 
++from six import string_types
++
+ import numpy as np
+ import scipy.ndimage as nd
+ 
+@@ -16,8 +18,6 @@
+ 
+ from nipy.io.nibcompat import get_affine
+ 
+-from nipy.externals.six import string_types
+-
+ # definition of the maxima at the group level
+ pos = np.array([[6, 7],
+                 [10, 10],
+diff --git a/nipy/modalities/fmri/glm.py b/nipy/modalities/fmri/glm.py
+index afb8159781..1574cfa14e 100644
+--- a/nipy/modalities/fmri/glm.py
++++ b/nipy/modalities/fmri/glm.py
+@@ -36,6 +36,8 @@
+ 
+ from warnings import warn
+ 
++from six import string_types
++
+ import scipy.stats as sps
+ 
+ from nibabel import load, Nifti1Image
+@@ -45,8 +47,6 @@
+ from nipy.algorithms.statistics.models.regression import OLSModel, ARModel
+ from nipy.algorithms.statistics.utils import multiple_mahalanobis, z_score
+ 
+-from nipy.externals.six import string_types
+-
+ DEF_TINY = 1e-50
+ DEF_DOFMAX = 1e10
+ 
+diff --git a/nipy/modalities/fmri/hemodynamic_models.py b/nipy/modalities/fmri/hemodynamic_models.py
+index 5593635595..284725f636 100644
+--- a/nipy/modalities/fmri/hemodynamic_models.py
++++ b/nipy/modalities/fmri/hemodynamic_models.py
+@@ -9,12 +9,12 @@
+ 
+ import warnings
+ 
++from six.moves import map
++
+ import numpy as np
+ 
+ from scipy.stats import gamma
+ 
+-from nipy.externals.six.moves import map
+-
+ 
+ def _gamma_difference_hrf(tr, oversampling=16, time_length=32., onset=0.,
+                          delay=6, undershoot=16., dispersion=1.,
+diff --git a/nipy/pkg_info.py b/nipy/pkg_info.py
+index f82e2bc2d6..f166dbe083 100644
+--- a/nipy/pkg_info.py
++++ b/nipy/pkg_info.py
+@@ -4,7 +4,7 @@
+ import sys
+ import subprocess
+ 
+-from .externals.six.moves import configparser
++from six.moves import configparser
+ 
+ COMMIT_INFO_FNAME = 'COMMIT_INFO.txt'
+ 
+diff --git a/nipy/setup.py b/nipy/setup.py
+index 7dd75a9641..b1b8443470 100644
+--- a/nipy/setup.py
++++ b/nipy/setup.py
+@@ -5,15 +5,8 @@
+ import os
+ import sys
+ 
+-# Cannot use internal copy of six because can't import from nipy tree
+-# This is to allow setup.py to run without a full nipy
+-PY3 = sys.version_info[0] == 3
+-if PY3:
+-    string_types = str,
+-    from configparser import ConfigParser
+-else:
+-    string_types = basestring,
+-    from ConfigParser import ConfigParser
++from six import string_types
++from six.moves.configparser import ConfigParser
+ 
+ NIPY_DEFAULTS = dict()
+ 
+diff --git a/nipy/testing/decorators.py b/nipy/testing/decorators.py
+index addb357079..3bebf4a506 100644
+--- a/nipy/testing/decorators.py
++++ b/nipy/testing/decorators.py
+@@ -8,6 +8,8 @@
+ from __future__ import print_function
+ from __future__ import absolute_import
+ 
++from six import string_types
++
+ try:
+     from numpy.testing.decorators import *
+ except ImportError:
+@@ -17,8 +19,6 @@
+ 
+ from nibabel.optpkg import optional_package
+ 
+-from nipy.externals.six import string_types
+-
+ matplotlib, HAVE_MPL, _ = optional_package('matplotlib')
+ needs_mpl = skipif(not HAVE_MPL, "Test needs matplotlib")
+ 
+diff --git a/nipy/utils/tests/test_arrays.py b/nipy/utils/tests/test_arrays.py
+index f5a8574abd..9555c7aa57 100644
+--- a/nipy/utils/tests/test_arrays.py
++++ b/nipy/utils/tests/test_arrays.py
+@@ -2,12 +2,12 @@
+ """
+ from __future__ import absolute_import
+ 
++from six import binary_type, text_type
++
+ import numpy as np
+ 
+ from ..arrays import strides_from
+ 
+-from nipy.externals.six import binary_type, text_type
+-
+ from numpy.testing import (assert_array_almost_equal,
+                            assert_array_equal)
+ 
+diff --git a/requirements.txt b/requirements.txt
+index 479362cde9..4bdf7f814c 100644
+--- a/requirements.txt
++++ b/requirements.txt
+@@ -1,5 +1,6 @@
+ # See nipy/info.py for requirement definitions
+ numpy>=1.14
+ scipy>=1.0
++six>=1.9
+ sympy>=1.0
+ nibabel>=2.0
+diff --git a/setup.py b/setup.py
+index d400d610c9..84153449fd 100755
+--- a/setup.py
++++ b/setup.py
+@@ -46,10 +46,12 @@ def configuration(parent_package='',top_path=None):
+ # Hard and soft dependency checking
+ DEPS = (
+     ('numpy', INFO_VARS['NUMPY_MIN_VERSION'], 'setup_requires'),
++    ('six', INFO_VARS['SIX_MIN_VERSION'], 'setup_requires'),
+     ('numpy', INFO_VARS['NUMPY_MIN_VERSION'], 'install_requires'),
+     ('scipy', INFO_VARS['SCIPY_MIN_VERSION'], 'install_requires'),
+     ('nibabel', INFO_VARS['NIBABEL_MIN_VERSION'], 'install_requires'),
+     ('sympy', INFO_VARS['SYMPY_MIN_VERSION'], 'install_requires'),
++    ('six', INFO_VARS['SIX_MIN_VERSION'], 'install_requires'),
+ )
+ 
+ requirement_kwargs = {'setup_requires': [], 'install_requires': []}

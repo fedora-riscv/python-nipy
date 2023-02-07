@@ -37,6 +37,9 @@ Patch:          https://github.com/nipy/nipy/pull/500.patch
 # https://salsa.debian.org/med-team/nipy/-/blob/12a4fbea8c99c1e5dc07ee81bc3da1a450617050/debian/patches/nibabel5.0.0.patch
 # Latest version from Debian rebased on the commit that is packaged.
 Patch:          0001-Account-for-nibabel-5.0.0-removal-of-.py3k-shim-use-.patch
+# Unbundle six
+# https://github.com/nipy/nipy/pull/504
+Patch:          https://github.com/nipy/nipy/pull/504/commits/a6de01c7484114aa52847edc400a386743e60c42.patch
 
 BuildRequires:  gcc
 BuildRequires:  flexiblas-devel
@@ -45,6 +48,7 @@ BuildRequires:  python3-devel
 BuildRequires:  python3dist(setuptools)
 # Imported in setup.py
 BuildRequires:  python3dist(numpy)
+#BuildRequires:  python3dist(six)
 
 # For re-generating C code as required by packaging guidelines; see also
 # nipy/nipy/info.py
@@ -123,12 +127,11 @@ Requires:       nipy-data
 %autosetup -n nipy-%{commit} -p1
 
 # Add dependencies on libraries that are unbundled downstream to the metadata:
-line="requirement_kwargs['install_requires'].extend(['six', 'transforms3d'])"
+line="requirement_kwargs['install_requires'].extend(['transforms3d'])"
 sed -r -i "s/^(def main|setup)/# Unbundled:\\n${line}\\n&/" setup.py
 
 # Some bundled pure-Python libraries have been replaced with dependencies:
 #   - python3dist(transforms3d)
-#   - python3dist(six)
 # Begin by removing the subpackage for bundled dependencies:
 rm -vrf nipy/externals/
 # Now fix the imports. The find-then-modify pattern keeps us from discarding
@@ -251,6 +254,7 @@ PATH="%{buildroot}%{_bindir}:${PATH}" \
 - Add man pages for the command-line tools
 - Add some support for PDF documentation, but do not enable it yet
 - Fix compatibility with nibabel 5.0.0
+- Unbundle six via a PR/patch to upstream rather than downstream-only
 
 * Fri Jan 20 2023 Fedora Release Engineering <releng@fedoraproject.org> - 0.5.0-7
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_38_Mass_Rebuild

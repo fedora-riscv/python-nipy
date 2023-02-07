@@ -1,0 +1,102 @@
+.TH NIPY_DIAGNOSE "1" "February 2023" "" "User Commands"
+.SH NAME
+.B nipy_diagnose
+\(en Calculate and write results for diagnostic screen
+.SH SYNOPSIS
+.B nipy_diagnose
+.RB [ \-h ]
+.RB [ \-\-out\-path\ \fIOUT_PATH ]
+.RB [ \-\-out\-fname\-label\ \fIOUT_FNAME_LABEL ]
+.RB [ \-\-ncomponents\ \fINCOMPONENTS ]
+.RB [ \-\-time\-axis\ \fITIME_AXIS ]
+.RB [ \-\-slice\-axis\ \fISLICE_AXIS ]
+.I filename
+.SH DESCRIPTION
+.BR nipy_diagnose (1)
+will generate a series of diagnostic images
+for a 4D fMRI image volume.
+The following images will be generated.
+.RI < ext >
+is the input filename extension (e.g.\ \(oq\fB.nii\fR\(cq):
+.RS +7n
+.IP \(bu 2
+.B components_\fR<\fIlabel\fR>\fB.png\fR\ :
+plots of PCA basis vectors
+.IP \(bu 2
+.B max_\fR<\fIlabel\fR><\fIext\fR>\ :
+max image
+.IP \(bu 2
+.B mean_\fR<\fIlabel\fR><\fIext\fR>\ :
+mean image
+.IP \(bu 2
+.B min_\fR<\fIlabel\fR><\fIext\fR>\ :
+min image
+.IP \(bu 2
+.B pca_\fR<\fIlabel\fR><\fIext\fR>\ :
+4D image of PCA component images
+.IP \(bu 2
+.B pcnt_var_\fR<\fIlabel\fR>\fB.png\fR\ :
+percent variance scree plot for PCA components
+.IP \(bu 2
+.B std_\fR<\fIlabel\fR><\fIext\fR>\ :
+standard deviation image
+.IP \(bu 2
+.B tsdiff_\fR<\fIlabel\fR>\fB.png\fR\ :
+time series diagnostic plot
+.RE
+.P
+The filenames for the outputs are of the form
+.RI < out\-path > \fB/ < some_prefix >< label >< file\-ext >
+where
+.RI < out\-path >
+is the path specified by the
+.B \-\-out\-path
+option, or the path of the input filename;
+.RB < some_prefix >
+are the standard prefixes above,
+.RI < label >
+is given by
+.BR \-\-out\-label ,
+or by the filename of the input image
+(with path and extension removed), and
+.RI < file\-ext >
+is
+.RB \(oq .png \(cq
+for graphics,
+or the extension of the input filename for volume images.
+For example,
+specifying only the input filename
+.B /some/path/fname.img
+will generate filenames of the form
+.BR /some/path/components_fname.png ,
+.B /some/path/max_fname.img
+etc.
+.SH OPTIONS
+.SS "POSITIONAL ARGUMENTS"
+.TP
+.I filename
+4D image filename
+.SS "OPTIONAL ARGUMENTS"
+.TP
+.BR \-h ,\  \-\-help
+Show a help message and exit
+.TP
+.B \-\-out\-path\ \fIOUT_PATH
+Path for output image files
+.TP
+.B \-\-out\-fname\-label\ \fIOUT_FNAME_LABEL
+Mid part of output image filenames
+.TP
+.B \-\-ncomponents\ \fINCOMPONENTS
+Number of PCA components to write
+.TP
+.B \-\-time\-axis\ \fITIME_AXIS
+Image axis for time
+.TP
+.B \-\-slice\-axis\ \fITSLICE_AXIS
+Image axis for slice
+.SH "SEE ALSO"
+.BR nipy_3dto4d (1),
+.BR nipy_4d_realign (1),
+.BR nipy_4dto3d (1),
+.BR nipy_tsdiffana (1)

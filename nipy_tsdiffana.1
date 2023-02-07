@@ -1,0 +1,171 @@
+.TH NIPY_TSDIFFANA "1" "February 2023" "" "User Commands"
+.SH NAME
+.B nipy_tsdiffana
+\(en Analyze, plot time series difference metrics
+.SH SYNOPSIS
+.B nipy_tsdiffana
+.RB [ \-h ]
+.RB [ \-\-out\-file\ \fIOUT_FILE ]
+.RB [ \-\-write\-results ]
+.RB [ \-\-out\-path\ \fIOUT_PATH ]
+.RB [ \-\-out\-fname\-label\ \fIOUT_FNAME_LABEL ]
+.RB [ \-\-time\-axis\ \fITIME_AXIS ]
+.RB [ \-\-slice\-axis\ \fISLICE_AXIS ]
+.I filename
+.SH DESCRIPTION
+Runs the time series difference algorithm over a 4D image volume,
+often an FMRI volume.
+.P
+It works in one of three modes:
+.RS +7n
+.IP \(bu 2
+.I interactive\fR\ :
+the time series difference plot appears on screen.
+This is the default mode
+.IP \(bu 2
+.I non-interactive, plot only\fR\ :
+write time series difference plot to graphic file.
+Use the
+.RB \(lq \-\-out\-file= < \fImyfilename >\(rq
+option to activate this mode
+.IP \(bu 2
+.I non-interactive, write plot, images and variables\fR\ :
+write plot to file,
+and write generated diagnostic images and variables to files as well.
+Use the
+.RB \(lq \-\-write\-results \(rq
+flag to activate this option.
+The generated filenames come from the results of the
+.RB \(lq \-\-write\-results \(rq
+.RB \(lq \-\-out\-path \(rq
+and
+.RB \(lq \-\-out\-fname\-label \(rq
+options (see
+.BR OPTIONS ).
+.RE
+.SS "WRITE-RESULTS OPTION, GENERATED FILES"
+When doing the time point analysis,
+we will make a difference volume
+between each time point and the next time point in the series.
+If we have
+.I T
+volumes then there will be
+.RI ( T \-1)
+difference volumes.
+Call the vector of difference volumes
+.I DV
+and the first difference volume
+.IR DV [0].
+So
+.I DV [0]
+results from subtraction of the second volume in the 4D input image
+from the first volume in the 4D input image.
+The element-wise squared values from
+.IR DV [0]
+is
+.IR DV2 [0].
+.P
+The following images will be generated.
+.RI < ext >
+is the input filename extension (e.g. \(oq\fB.nii\fR\(cq):
+.RS +7n
+.IP \(bu 2
+.RB \(lq dv2_max_ < \fIlabel >< \fIext >\(rq\ :
+3D image volume,
+where each slice
+.I S
+is slice from all of
+.I DV2 [0]
+(slice
+.IR S )
+through
+.IR DV2 [ T \-1]
+(slice
+.IR S )
+that has the maximum summed squared values.
+This volume gives an idea of the worst (highest difference) slices
+across the whole time series.
+.IP \(bu 2
+.RB \(lq dv2_mean_ < \fIlabel >< \fIext >\(rq\ :
+the mean of all
+.I DV2
+volumes
+.IR DV2 [0]\ ..\  DV [ T \-1]
+across the volume (time) dimension.
+Higher voxel values in this volume
+mean that time-point to time point differences
+tended to be high in this voxel.
+.RE
+.P
+We also write the mean signal at each time point,
+and the mean squared difference between each slice in time,
+as variables to a
+.RB \(oq npz \(cq
+file named
+.RB \(lq tsdiff_ < \fIlabel > .npz \(rq
+.P
+The filenames for the outputs are of the form
+.RI < out\-path > \fB/ < some_prefix >< label >< file\-ext >
+where
+.RI < out\-path >
+is the path specified by the
+.B \-\-out\-path
+option, or the path of the input filename;
+.RI < some_prefix >
+is one of the standard prefixes above,
+.RI < label >
+is given by
+.BR \-\-out\-label ,
+or by the filename of the input image
+(with path and extension removed),
+and
+.RI < file\-ext >
+is
+.RB \(oq .png \(cq
+for graphics, or the extension of the input filename for volume images.
+For example, specifying only the input filename
+.B /some/path/fname.img
+will generate filenames of the form
+.BR /some/path/tsdiff_fname.png ,
+.B /some/path/dv2_max_fname.img
+etc.
+.SH OPTIONS
+.SS "POSITIONAL ARGUMENTS"
+.TP
+.I filename
+4D image filename
+.SS "OPTIONAL ARGUMENTS"
+.TP
+.BR \-h ,\  \-\-help
+Show a help message and exit
+.TP
+.B \-\-out\-file\ \fIOUT_FILE
+Graphics file to write to instead of leaving image on screen
+.TP
+.B \-\-write\-results
+Graphics file to write to instead of leaving image on screen
+If specified,
+write diagnostic images and analysis variables,
+plot to
+.IR OUT_PATH .
+Mutually incompatible with
+.I OUT_FILE
+.TP
+.B \-\-out\-path\ \fIOUT_PATH
+Path for output image files
+(default from
+.I filename
+path)
+.TP
+.B \-\-out\-fname\-label\ \fIOUT_FNAME_LABEL
+Mid part of output image / plot filenames
+.TP
+.B \-\-time\-axis\ \fITIME_AXIS
+Image axis for time
+.TP
+.B \-\-slice\-axis\ \fISLICE_AXIS
+.SH "SEE ALSO"
+.BR nipy_3dto4d (1),
+.BR nipy_4d_realign (1),
+.BR nipy_4dto3d (1),
+.BR nipy_diagnose (1)

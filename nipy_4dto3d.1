@@ -1,0 +1,32 @@
+.TH NIPY_4DTO3D "1" "February 2023" "" "User Commands"
+.SH NAME
+.B nipy_4dto3d
+\(en Read 4D image file and write 3D nifti file for each volume
+.SH SYNOPSIS
+.B nipy_4dto3d
+.RB [ \-h ]
+.RB [ \-\-out\-path\ \fIOUT_PATH ]
+.I filename
+.SH DESCRIPTION
+.BR nipy_4dto3d (1)
+will generate a series of 3D nifti images
+for each volume of a 4D image series
+in any format readable by
+.BR nibabel .
+.SH OPTIONS
+.SS "POSITIONAL ARGUMENTS"
+.TP
+.I filename
+4D image filename
+.SS "OPTIONAL ARGUMENTS"
+.TP
+.BR \-h ,\  \-\-help
+Show a help message and exit
+.TP
+.B \-\-out\-path\ \fIOUT_PATH
+Path for output image files
+.SH "SEE ALSO"
+.BR nipy_3dto4d (1),
+.BR nipy_4d_realign (1),
+.BR nipy_diagnose (1),
+.BR nipy_tsdiffana (1)

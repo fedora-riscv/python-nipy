@@ -1,0 +1,47 @@
+.TH NIPY_3DTO4D "1" "February 2023" "" "User Commands"
+.SH NAME
+.B nipy_3dto4d
+\(en Read 3D image files and write a 4D file
+.SH SYNOPSIS
+.B nipy_3dto4d
+.RB [ \-h ]
+.RB [ \-\-out\-4d\ \fIOUT_4D ]
+.RB [ \-\-check\-affines\ \fICHECK_AFFINES ]
+.I in_filenames
+.RI [ in_filenames \ ...]
+.SH DESCRIPTION
+.BR nipy_3dto4d (1)
+will take a series of 3D nifti images
+in any format readable by
+.B nibabel
+and concatenate them into a 4D image,
+and write the image
+with format guessed from the output image filename.
+You can set the filename with the
+.B \-\-out\-4d
+parameter,
+or we make a filename from the input names.
+.SH OPTIONS
+.SS "POSITIONAL ARGUMENTS"
+.TP
+.I in_filenames
+3D image filenames
+.SS "OPTIONAL ARGUMENTS"
+.TP
+.BR \-h ,\  \-\-help
+Show a help message and exit
+.TP
+.B \-\-out\-4d\ \fIOUT_4D
+4D output image name
+.B \-\-check\-affines\ \fICHECK_AFFINES
+.B False
+if you want to ignore differences in affines between the 3D images,
+.B True
+if you want to raise an error for significant differences
+(default is
+.BR True )
+.SH "SEE ALSO"
+.BR nipy_4d_realign (1),
+.BR nipy_4dto3d (1),
+.BR nipy_diagnose (1),
+.BR nipy_tsdiffana (1)

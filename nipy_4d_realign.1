@@ -1,0 +1,98 @@
+.TH NIPY_4D_REALIGN "1" "February 2023" "" "User Commands"
+.SH NAME
+.B nipy_4d_realign
+\(en Command-line wrapper for \fBSpaceTimeRealign
+.SH SYNOPSIS
+.B nipy_4d_realign
+.RB [ \-h ]
+.RB [ \-\-slice_order\ \fIString ]
+.RB [ \-\-slice_dim\ \fIInt ]
+.RB [ \-\-slice_dir\ \fIInt ]
+.RB [ \-\-make_figure\ \fIBool ]
+.RB [ \-\-save_path\ \fIString ]
+.RB [ \-\-save_params\ \fIBool ]
+.I Float
+.I File
+.SH OPTIONS
+.SS "POSITIONAL ARGUMENTS"
+.TP
+.I Float
+The TR of the measurement
+.TP
+.I File
+Path to a nifti file,
+or to a folder containing nifti files.
+If a path to a folder is provided,
+the order of motion correction will be
+.BR np.sort(list_of_files) .
+The outputs will be
+.RB \(oq *_mc.par \(cq
+(containing 3 translation and three rotation parameters)
+and
+.RB \(oq *_mc.nii.gz \(cq
+containing the motion corrected data
+(unless
+.RB \(oq apply \(cq
+is set to
+.BR False )
+.SS "OPTIONAL ARGUMENTS"
+.TP
+.BR \-h ,\  \-\-help
+Show a help message and exit
+.TP
+.B \-\-slice_order\ \fIString
+The order of slice aquisition
+.RB {\(oq ascending \(cq,
+.RB \(oq descending \(cq
+.RI ( default ),
+or the name of a function from
+.BR nipy.algorithms.slicetiming.timefuncs }
+.TP
+.B \-\-slice_dim\ \fIInt
+Integer denoting the axis in
+.I images
+that is the slice axis.
+In a 4D image, this will often be
+.RB axis\ =\  2
+.RI ( default ).
+.TP
+.B \-\-slice_dir\ \fIInt
+.B 1
+if the slices were acquired slice 0 first
+.RI ( default ),
+slice \-1 last,
+or
+.B \-1
+if acquire slice \-1 first,
+slice 0 last.
+.TP
+.B \-\-make_figure\ \fIBool
+Whether to generate a
+.RB \(oq .png \(cq
+figure with the motion parameters across runs.
+.RB { True ,
+.BR False }.
+.IR Default :
+.B False
+.TP
+.B \-\-save_path\ \fIString
+Full path to a file-system location for the output files.
+Defaults to the same location as the input files.
+.TP
+.B \-\-save_params\ \fIBool
+Whether to save the motion corrections parameters
+(3 rotations, 3 translations).
+.RB { True ,
+.RB False }.
+.IR Default :
+.BR False .
+.IR NOTE :
+The rotations are not Euler angles, but a rotation vector.
+Use
+.B nipy.algorithms.registration.to_matrix44
+to convert to a 4-by-4 affine matrix.
+.SH "SEE ALSO"
+.BR nipy_3dto4d (1),
+.BR nipy_4dto3d (1),
+.BR nipy_diagnose (1),
+.BR nipy_tsdiffana (1)

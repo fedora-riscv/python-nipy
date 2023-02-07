@@ -13,6 +13,13 @@ License:        BSD-3-Clause
 URL:            https://nipy.org/nipy
 Source0:        https://github.com/nipy/nipy/archive/%{commit}/nipy-%{commit}.tar.gz
 
+# Man pages hand-written for Fedora in groff_man(7) format based on --help
+Source10:       nipy_3dto4d.1
+Source11:       nipy_4d_realign.1
+Source12:       nipy_4dto3d.1
+Source13:       nipy_diagnose.1
+Source14:       nipy_tsdiffana.1
+
 # Ensure numpy is in install_requires, not only setup_requires
 # https://github.com/nipy/nipy/pull/500
 Patch:          https://github.com/nipy/nipy/pull/500.patch
@@ -137,6 +144,9 @@ export NIPY_EXTERNAL_LAPACK=1
 %pyproject_install
 %pyproject_save_files nipy
 
+install -t '%{buildroot}%{_mandir}/man1' -m 0644 -p -D \
+    '%{SOURCE10}' '%{SOURCE11}' '%{SOURCE12}' '%{SOURCE13}' '%{SOURCE14}'
+
 
 %check
 %if %{with tests}
@@ -158,6 +168,12 @@ PATH="%{buildroot}%{_bindir}:${PATH}" \
 %{_bindir}/nipy_4dto3d
 %{_bindir}/nipy_diagnose
 %{_bindir}/nipy_tsdiffana
+
+%{_mandir}/man1/nipy_3dto4d.1*
+%{_mandir}/man1/nipy_4d_realign.1*
+%{_mandir}/man1/nipy_4dto3d.1*
+%{_mandir}/man1/nipy_diagnose.1*
+%{_mandir}/man1/nipy_tsdiffana.1*
 
 
 %files doc
@@ -188,6 +204,7 @@ PATH="%{buildroot}%{_bindir}:${PATH}" \
 - Properly indicate partial scipy bundling
 - Update License to SPDX
 - Port to pyproject-rpm-macros
+- Add man pages for the command-line tools
 
 * Fri Jan 20 2023 Fedora Release Engineering <releng@fedoraproject.org> - 0.5.0-7
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_38_Mass_Rebuild

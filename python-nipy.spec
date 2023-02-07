@@ -32,6 +32,11 @@ Source14:       nipy_tsdiffana.1
 # Ensure numpy is in install_requires, not only setup_requires
 # https://github.com/nipy/nipy/pull/500
 Patch:          https://github.com/nipy/nipy/pull/500.patch
+# Account for nibabel 5.0.0 removal of .py3k shim - use numpy.compat.py3k
+# https://github.com/nipy/nipy/pull/498
+# https://salsa.debian.org/med-team/nipy/-/blob/12a4fbea8c99c1e5dc07ee81bc3da1a450617050/debian/patches/nibabel5.0.0.patch
+# Latest version from Debian rebased on the commit that is packaged.
+Patch:          0001-Account-for-nibabel-5.0.0-removal-of-.py3k-shim-use-.patch
 
 BuildRequires:  gcc
 BuildRequires:  flexiblas-devel
@@ -52,6 +57,8 @@ BuildRequires:  python3dist(matplotlib)
 # https://fedoraproject.org/wiki/Changes/DeprecateNose
 BuildRequires:  python3dist(nose)
 BuildRequires:  nipy-data
+# An indirect dependency, via nibabel.testing (for nibabel 5.x)
+BuildRequires:  python3dist(pytest)
 %endif
 
 %if %{with doc_pdf}
@@ -243,6 +250,7 @@ PATH="%{buildroot}%{_bindir}:${PATH}" \
 - Port to pyproject-rpm-macros
 - Add man pages for the command-line tools
 - Add some support for PDF documentation, but do not enable it yet
+- Fix compatibility with nibabel 5.0.0
 
 * Fri Jan 20 2023 Fedora Release Engineering <releng@fedoraproject.org> - 0.5.0-7
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_38_Mass_Rebuild
